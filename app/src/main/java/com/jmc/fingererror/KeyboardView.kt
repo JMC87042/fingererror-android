@@ -2,6 +2,7 @@ package com.jmc.fingererror
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -54,6 +55,9 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private val keyPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.argb(70, 0, 0, 0) }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textAlign = Paint.Align.CENTER }
+    private val bmpPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+    private val spaceLogo = BitmapFactory.decodeResource(resources, R.drawable.space_logo)
+    private val logoRect = RectF()
 
     init {
         isHapticFeedbackEnabled = true
@@ -129,7 +133,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private fun label(k: Key): String = when (k.id) {
         "SHIFT" -> "⇧"
         "BACK" -> "⌫"
-        "SPACE" -> "● 핑거에러"
+        "SPACE" -> ""
         "ENTER" -> "⏎"
         "GLOBE" -> "🌐"
         "MODE" -> if (page == Page.HANGUL) "123" else "가"
@@ -160,9 +164,12 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 k.id == "MODE" -> 16f * dp
                 else -> 21f * dp
             }
-            if (k.id == "SPACE") {
-                textPaint.color = accent
-                textPaint.typeface = Typeface.DEFAULT_BOLD
+            if (k.id == "SPACE" && spaceLogo != null) {
+                // 스페이스바에 엄지 로고
+                val s = k.h * 0.72f
+                logoRect.set(k.cx - s / 2, k.cy - s / 2, k.cx + s / 2, k.cy + s / 2)
+                canvas.drawBitmap(spaceLogo, null, logoRect, bmpPaint)
+                continue
             }
             val fm = textPaint.fontMetrics
             val ty = k.cy - (fm.ascent + fm.descent) / 2

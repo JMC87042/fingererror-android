@@ -199,7 +199,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         val sr = max(0.03, 1.0 / (sd[2] + 5))
         sd[0] = clamp(sd[0] + sr * (ox - sd[0]), 0.35)
         sd[1] = clamp(sd[1] + sr * (oy - sd[1]), 0.35)
-        sd[2] += 1
+        sd[2] += 1.0
         val o = lr.off[id] ?: run { val e = effOff(k); doubleArrayOf(e.first, e.second, 0.0) }
         var rate = rate0
         if (rate < 0.1) rate = max(rate, 1.0 / (o[2] + 6))
@@ -209,7 +209,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         lr.spreadN++
         o[0] = clamp(o[0] + rate * (ox - o[0]), 0.35)
         o[1] = clamp(o[1] + rate * (oy - o[1]), 0.35)
-        o[2] += 1
+        o[2] += 1.0
         lr.off[id] = o
     }
 
