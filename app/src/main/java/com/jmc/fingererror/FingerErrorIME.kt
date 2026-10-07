@@ -70,11 +70,13 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        kv?.reloadTheme()
         resetWord()
         history.clear(); clearDel(); lastPunct = null
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
+        kv?.closeMenu()
         finalizeWord()
         stopRepeat()
         currentInputConnection?.finishComposingText()
@@ -136,6 +138,10 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
             k.letter -> typeLetter(p.id, p.fx, p.fy, p.raw)
             else -> typeChar(chOf(p.id), p.id, p.fx, p.fy)
         }
+    }
+
+    override fun onCancel(pointerId: Int) {
+        pending.remove(pointerId)
     }
 
     private fun chOf(id: String) = when (id) { "SPACE" -> " "; "ENTER" -> "\n"; else -> id }
