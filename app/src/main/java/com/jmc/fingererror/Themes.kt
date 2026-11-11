@@ -120,11 +120,11 @@ object Themes {
             accent = c(255, 128, 170), radiusDp = 10f
         ),
         Theme(
-            "cocoa", "코코아",
-            bg = c(232, 214, 196), key = c(255, 249, 240), special = c(176, 128, 96),
-            pressKey = c(244, 234, 220), pressSpecial = c(156, 110, 80),
-            text = c(110, 72, 50), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(150, 96, 64), radiusDp = 10f
+            "pin", "핀스트라이프",
+            bg = c(250, 250, 251), key = c(255, 255, 255), special = c(30, 30, 34),
+            pressKey = c(236, 236, 238), pressSpecial = c(54, 54, 58),
+            text = c(24, 24, 28), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(204, 24, 44), radiusDp = 10f, bgRes = R.drawable.bg_pin, short = "핀스트라이프"
         ),
 
         // ---- 레트로 10색 (키캡 모양 고르기) ----
