@@ -807,7 +807,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         menuPid = pid
         hot = null
         menuOpen = true
-        menuTab = Themes.pageOf(theme.id).toString()
+        menuTab = Themes.tabOf(theme)
         performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
         layoutMenu()
         invalidate()
@@ -825,6 +825,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private val tabColor = RectF()
     private val tabRetro = RectF()
     private val tabWinter = RectF()
+    private val tabSpecial = RectF()
     private val capBtn = RectF()
     private val chipCache = HashMap<String, android.graphics.Bitmap?>()
     /** 메뉴 미리보기는 작게 읽어서 메모리 아끼기 */
@@ -886,13 +887,15 @@ class KeyboardView(ctx: Context) : View(ctx) {
         tabColor.set(panel.left + pad, ty, panel.left + pad + 34 * dp, ty + 22 * dp)
         tabRetro.set(tabColor.right + 5 * dp, ty, tabColor.right + 5 * dp + 34 * dp, ty + 22 * dp)
         tabWinter.set(tabRetro.right + 5 * dp, ty, tabRetro.right + 5 * dp + 34 * dp, ty + 22 * dp)
+        val lastTab = listOf(tabColor, tabRetro, tabWinter)[minOf(Themes.pages.size, 3) - 1]
+        tabSpecial.set(lastTab.right + 8 * dp, ty, lastTab.right + 8 * dp + 64 * dp, ty + 22 * dp)
         capBtn.set(panel.right - pad - 112 * dp, ty, panel.right - pad, ty + 22 * dp)
         val cw = (panel.width() - pad * 2 - g * 4) / 5
         val rowsTop = ty + 28 * dp
         val rowH = (panel.bottom - rowsTop - 4 * dp) / 2
         val ih = minOf(cw * 0.75f, rowH - 17 * dp)
         chipRects.clear(); nameRects.clear()
-        val list = Themes.page(menuTab.toIntOrNull() ?: 0)
+        val list = Themes.tabList(menuTab)
         for ((i, t) in list.withIndex()) {
             val x = panel.left + pad + (i % 5) * (cw + g)
             val y = rowsTop + (i / 5) * rowH
@@ -908,6 +911,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         if (np > 0 && tabColor.contains(x, y)) return "#tab:0"
         if (np > 1 && tabRetro.contains(x, y)) return "#tab:1"
         if (np > 2 && tabWinter.contains(x, y)) return "#tab:2"
+        if (tabSpecial.contains(x, y)) return "#tab:s"
         if (capBtn.contains(x, y)) return "#cap"
         for ((id, r) in chipRects) {
             val n = nameRects[id] ?: continue
@@ -969,7 +973,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         menuText.color = Color.rgb(60, 62, 70)
         // 탭 + 키캡 모양 버튼
         val capNow = Themes.capId(context)
-        for ((rect, tab, label) in listOf(Triple(tabColor, "0", "1"), Triple(tabRetro, "1", "2"), Triple(tabWinter, "2", "3")).take(Themes.pages.size)) {
+        for ((rect, tab, label) in listOf(Triple(tabColor, "0", "1"), Triple(tabRetro, "1", "2"), Triple(tabWinter, "2", "3")).take(Themes.pages.size) + listOf(Triple(tabSpecial, "s", "버건디"))) {
             val on = menuTab == tab
             menuPaint.style = Paint.Style.FILL
             menuPaint.color = if (on) Color.rgb(255, 160, 132) else Color.rgb(238, 234, 230)
@@ -988,7 +992,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         }
         menuText.textSize = 11f * dp
         menuText.color = Color.rgb(60, 62, 70)
-        for (t in Themes.page(menuTab.toIntOrNull() ?: 0)) {
+        for (t in Themes.tabList(menuTab)) {
             val r = chipRects[t.id] ?: continue
             chipBmp(Themes.previewName(t, capNow))?.let { b -> canvas.drawBitmap(b, null, r, bmpPaint) }
             val ring = when (t.id) { hot -> Color.rgb(255, 120, 90); cur -> Color.rgb(52, 199, 89); else -> 0 }

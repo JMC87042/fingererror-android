@@ -95,13 +95,6 @@ object Themes {
             radiusDp = 10f, short = "블랙"
         ),
         Theme(
-            "burgundy", "버건디 & 그레이",
-            bg = c(48, 48, 54), key = c(214, 214, 218), special = c(118, 26, 44),
-            pressKey = c(196, 196, 202), pressSpecial = c(100, 20, 36),
-            text = c(118, 26, 44), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(150, 34, 56), radiusDp = 10f, short = "버건디 그레이"
-        ),
-        Theme(
             "pin", "핀스트라이프",
             bg = c(250, 250, 251), key = c(255, 255, 255), special = c(30, 30, 34),
             pressKey = c(236, 236, 238), pressSpecial = c(54, 54, 58),
@@ -209,6 +202,35 @@ object Themes {
             accent = c(136, 86, 250), radiusDp = 10f, short = "라벤더"
         ),
 
+        // ---- 버건디 스페셜 ----
+        Theme(
+            "bur_key", "버건디 키",
+            bg = c(150, 150, 156), key = c(118, 26, 44), special = c(70, 70, 76),
+            pressKey = c(106, 23, 39), pressSpecial = c(61, 61, 66),
+            text = Color.WHITE, specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(150, 34, 56), radiusDp = 10f, short = "버건디 키", group = "special"
+        ),
+        Theme(
+            "bur_silver", "버건디 실버",
+            bg = c(110, 22, 40), key = c(206, 206, 210), special = c(150, 150, 156),
+            pressKey = c(185, 185, 189), pressSpecial = c(132, 132, 137),
+            text = c(110, 22, 40), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(70, 70, 76), radiusDp = 10f, short = "버건디 실버", group = "special"
+        ),
+        Theme(
+            "bur_charcoal", "버건디 차콜",
+            bg = c(72, 72, 78), key = c(120, 28, 48), special = c(40, 40, 44),
+            pressKey = c(108, 25, 43), pressSpecial = c(35, 35, 38),
+            text = c(236, 226, 228), specialText = c(210, 210, 216), shadow = Color.TRANSPARENT,
+            accent = c(150, 150, 158), radiusDp = 10f, short = "버건디 차콜", group = "special"
+        ),
+        Theme(
+            "bur_gold", "버건디 골드",
+            bg = c(70, 12, 26), key = c(128, 24, 46), special = c(92, 16, 32),
+            pressKey = c(115, 21, 41), pressSpecial = c(80, 14, 28),
+            text = c(232, 192, 118), specialText = c(232, 192, 118), shadow = Color.TRANSPARENT,
+            accent = c(214, 170, 86), radiusDp = 10f, short = "버건디 골드", group = "special"
+        ),
     )
 
     private const val PREFS = "fingererror_theme"
@@ -236,7 +258,11 @@ object Themes {
     /** 키캡 모양을 고를 수 있는 테마 (이제 전부) */
     fun capped(t: Theme) = true
     /** 메뉴 한 장에 10개씩 */
-    val pages get() = all.chunked(10)
+    val pages get() = all.filter { it.group == "color" }.chunked(10)
+    val special get() = all.filter { it.group == "special" }
+    /** 메뉴 탭: 숫자는 장, "s"는 버건디 스페셜 */
+    fun tabList(tab: String) = if (tab == "s") special else page(tab.toIntOrNull() ?: 0)
+    fun tabOf(t: Theme) = if (t.group == "special") "s" else pageOf(t.id).toString()
     fun page(i: Int) = pages.getOrElse(i) { pages.first() }
     fun pageOf(id: String) = maxOf(0, pages.indexOfFirst { p -> p.any { it.id == id } })
 
