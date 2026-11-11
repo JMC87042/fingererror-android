@@ -67,33 +67,25 @@ object Themes {
             accent = c(200, 156, 60), radiusDp = 10f, bgRes = R.drawable.bg_stripe
         ),
         Theme(
-            "mint", "민트 소다",
-            bg = c(132, 222, 206), key = c(236, 252, 248), special = c(90, 200, 186),
-            pressKey = c(212, 240, 234), pressSpecial = c(74, 184, 170),
-            text = c(30, 96, 92), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(44, 170, 190), radiusDp = 10f
+            "race", "레이싱 레드",
+            bg = c(16, 18, 24), key = c(30, 30, 33), special = c(190, 18, 28),
+            pressKey = c(46, 46, 50), pressSpecial = c(160, 12, 22),
+            text = c(236, 236, 238), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(214, 22, 32), radiusDp = 10f
         ),
         Theme(
-            "peach", "피치",
-            bg = c(255, 214, 204), key = c(255, 176, 160), special = c(255, 140, 130),
-            pressKey = c(250, 150, 134), pressSpecial = c(236, 116, 106),
-            text = c(150, 50, 46), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 110, 110), radiusDp = 12f
+            "rt_rose", "블랙 & 로즈 골드",
+            bg = c(14, 12, 14), key = c(42, 38, 40), special = c(28, 25, 27),
+            pressKey = c(60, 55, 57), pressSpecial = c(46, 42, 44),
+            text = c(226, 176, 156), specialText = c(226, 176, 156), shadow = Color.TRANSPARENT,
+            radiusDp = 10f, short = "로즈 골드"
         ),
         Theme(
-            "lime", "라임",
-            bg = c(214, 236, 190), key = c(249, 252, 241), special = c(176, 220, 110),
-            pressKey = c(232, 242, 218), pressSpecial = c(156, 204, 90),
-            text = c(60, 90, 40), specialText = c(40, 70, 24), shadow = Color.TRANSPARENT,
-            side = c(196, 214, 168), sideSpecial = c(116, 166, 56), accent = c(110, 172, 52),
-            radiusDp = 10f
-        ),
-        Theme(
-            "lavender", "라벤더",
-            bg = c(232, 224, 248), key = c(242, 235, 253), special = c(198, 180, 240),
-            pressKey = c(226, 216, 246), pressSpecial = c(180, 160, 230),
-            text = c(100, 80, 150), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(160, 130, 232), radiusDp = 12f
+            "rt_mono", "블랙",
+            bg = c(30, 30, 34), key = c(70, 70, 76), special = c(50, 50, 55),
+            pressKey = c(92, 92, 98), pressSpecial = c(70, 70, 76),
+            text = c(246, 246, 242), specialText = c(246, 246, 242), shadow = Color.TRANSPARENT,
+            radiusDp = 10f, short = "블랙"
         ),
         Theme(
             "pin", "핀스트라이프",
@@ -101,22 +93,6 @@ object Themes {
             pressKey = c(236, 236, 238), pressSpecial = c(54, 54, 58),
             text = c(24, 24, 28), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
             accent = c(204, 24, 44), radiusDp = 10f, bgRes = R.drawable.bg_pin, short = "핀스트라이프"
-        ),
-        Theme(
-            "race", "레이싱 레드",
-            bg = c(16, 18, 24), key = c(30, 30, 33), special = c(190, 18, 28),
-            pressKey = c(46, 46, 50), pressSpecial = c(160, 12, 22),
-            text = c(236, 236, 238), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(214, 22, 32), radiusDp = 10f
-        ),
-
-        // ---- 레트로 10색 (키캡 모양 고르기) ----
-        Theme(
-            "rt_rose", "블랙 & 로즈 골드",
-            bg = c(14, 12, 14), key = c(42, 38, 40), special = c(28, 25, 27),
-            pressKey = c(60, 55, 57), pressSpecial = c(46, 42, 44),
-            text = c(226, 176, 156), specialText = c(226, 176, 156), shadow = Color.TRANSPARENT,
-            radiusDp = 10f, short = "로즈 골드"
         ),
         Theme(
             "rt_navy", "네이비 & 오렌지",
@@ -133,39 +109,11 @@ object Themes {
             accent = c(255, 204, 64), radiusDp = 10f, short = "로열 블루"
         ),
         Theme(
-            "rt_mint", "민트 & 크림",
-            bg = c(120, 220, 200), key = c(255, 253, 242), special = c(70, 206, 184),
-            pressKey = c(239, 237, 227), pressSpecial = c(64, 189, 169),
-            text = c(40, 110, 100), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 112, 90), radiusDp = 10f, short = "민트 크림"
-        ),
-        Theme(
-            "rt_cherry", "체리 & 크림",
-            bg = c(214, 44, 72), key = c(255, 242, 228), special = c(255, 90, 110),
-            pressKey = c(239, 227, 214), pressSpecial = c(234, 82, 101),
-            text = c(170, 40, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 196, 90), radiusDp = 10f, short = "체리"
-        ),
-        Theme(
-            "rt_mono", "블랙",
-            bg = c(30, 30, 34), key = c(70, 70, 76), special = c(50, 50, 55),
-            pressKey = c(92, 92, 98), pressSpecial = c(70, 70, 76),
-            text = c(246, 246, 242), specialText = c(246, 246, 242), shadow = Color.TRANSPARENT,
-            radiusDp = 10f, short = "블랙"
-        ),
-        Theme(
-            "rt_milk", "딸기 우유",
-            bg = c(255, 206, 220), key = c(255, 255, 255), special = c(255, 116, 156),
-            pressKey = c(239, 239, 239), pressSpecial = c(234, 106, 143),
-            text = c(200, 70, 110), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 72, 124), radiusDp = 10f, short = "딸기 우유"
-        ),
-        Theme(
-            "rt_matcha", "말차 라떼",
-            bg = c(168, 214, 130), key = c(252, 252, 238), special = c(104, 176, 80),
-            pressKey = c(236, 236, 223), pressSpecial = c(95, 161, 73),
-            text = c(70, 110, 50), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(226, 146, 74), radiusDp = 10f, short = "말차"
+            "aurora", "오로라",
+            bg = c(40, 44, 100), key = c(214, 240, 250), special = c(140, 110, 230),
+            pressKey = c(190, 222, 238), pressSpecial = c(120, 92, 210),
+            text = c(50, 70, 130), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(70, 206, 170)
         ),
         Theme(
             "rt_sky", "하늘 & 핑크",
@@ -175,21 +123,54 @@ object Themes {
             accent = c(255, 128, 170), radiusDp = 10f, short = "하늘 핑크"
         ),
         Theme(
-            "rt_lavender", "라벤더 드림",
-            bg = c(178, 148, 244), key = c(250, 246, 255), special = c(196, 156, 255),
-            pressKey = c(235, 231, 239), pressSpecial = c(180, 143, 234),
-            text = c(110, 70, 190), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(136, 86, 250), radiusDp = 10f, short = "라벤더"
-        ),
-
-        // ---- 겨울 (레트로 기계식 키캡: 오목한 윗면 + 도톰한 몸통) ----
-        Theme(
             "winter", "눈사람",
             bg = c(170, 200, 240), key = c(252, 254, 255), special = c(150, 190, 240),
             pressKey = c(226, 238, 252), pressSpecial = c(130, 172, 228),
             text = c(60, 100, 170), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
             accent = c(110, 160, 232),
             bgRes = R.drawable.bg_winter, enterRes = R.drawable.enter_snowman, stickerRes = R.drawable.sticker_snow
+        ),
+        Theme(
+            "mint", "민트 소다",
+            bg = c(132, 222, 206), key = c(236, 252, 248), special = c(90, 200, 186),
+            pressKey = c(212, 240, 234), pressSpecial = c(74, 184, 170),
+            text = c(30, 96, 92), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(44, 170, 190), radiusDp = 10f
+        ),
+        Theme(
+            "rt_mint", "민트 & 크림",
+            bg = c(120, 220, 200), key = c(255, 253, 242), special = c(70, 206, 184),
+            pressKey = c(239, 237, 227), pressSpecial = c(64, 189, 169),
+            text = c(40, 110, 100), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 112, 90), radiusDp = 10f, short = "민트 크림"
+        ),
+        Theme(
+            "holly", "홀리 그린",
+            bg = c(30, 110, 70), key = c(255, 250, 240), special = c(220, 50, 56),
+            pressKey = c(240, 232, 218), pressSpecial = c(196, 40, 48),
+            text = c(30, 100, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(220, 50, 56), short = "홀리"
+        ),
+        Theme(
+            "peach", "피치",
+            bg = c(255, 214, 204), key = c(255, 251, 249), special = c(255, 140, 130),
+            pressKey = c(246, 234, 230), pressSpecial = c(236, 116, 106),
+            text = c(150, 50, 46), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 110, 110), radiusDp = 12f
+        ),
+        Theme(
+            "rt_cherry", "체리 & 크림",
+            bg = c(214, 44, 72), key = c(255, 242, 228), special = c(255, 90, 110),
+            pressKey = c(239, 227, 214), pressSpecial = c(234, 82, 101),
+            text = c(170, 40, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 196, 90), radiusDp = 10f, short = "체리"
+        ),
+        Theme(
+            "rt_milk", "딸기 우유",
+            bg = c(255, 206, 220), key = c(255, 255, 255), special = c(255, 116, 156),
+            pressKey = c(239, 239, 239), pressSpecial = c(234, 106, 143),
+            text = c(200, 70, 110), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 72, 124), radiusDp = 10f, short = "딸기 우유"
         ),
         Theme(
             "red", "크리스마스",
@@ -200,26 +181,20 @@ object Themes {
             bgRes = R.drawable.bg_red, enterRes = R.drawable.enter_snowman_red, stickerRes = R.drawable.sticker_holly
         ),
         Theme(
-            "holly", "홀리 그린",
-            bg = c(30, 110, 70), key = c(255, 250, 240), special = c(220, 50, 56),
-            pressKey = c(240, 232, 218), pressSpecial = c(196, 40, 48),
-            text = c(30, 100, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(220, 50, 56), short = "홀리"
+            "lavender", "라벤더",
+            bg = c(232, 224, 248), key = c(242, 235, 253), special = c(198, 180, 240),
+            pressKey = c(226, 216, 246), pressSpecial = c(180, 160, 230),
+            text = c(100, 80, 150), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(160, 130, 232), radiusDp = 12f
         ),
         Theme(
-            "choco", "핫초코",
-            bg = c(110, 70, 50), key = c(255, 248, 236), special = c(170, 110, 80),
-            pressKey = c(240, 228, 212), pressSpecial = c(150, 94, 66),
-            text = c(110, 70, 50), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(240, 150, 170)
+            "rt_lavender", "라벤더 드림",
+            bg = c(178, 148, 244), key = c(250, 246, 255), special = c(196, 156, 255),
+            pressKey = c(235, 231, 239), pressSpecial = c(180, 143, 234),
+            text = c(110, 70, 190), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(136, 86, 250), radiusDp = 10f, short = "라벤더"
         ),
-        Theme(
-            "aurora", "오로라",
-            bg = c(40, 44, 100), key = c(214, 240, 250), special = c(140, 110, 230),
-            pressKey = c(190, 222, 238), pressSpecial = c(120, 92, 210),
-            text = c(50, 70, 130), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(70, 206, 170)
-        ),
+
     )
 
     private const val PREFS = "fingererror_theme"
