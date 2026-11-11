@@ -167,7 +167,7 @@ class MainActivity : Activity() {
         col.addView(text("여기서 연습해 보세요", 16f, true))
         col.addView(EditText(this).apply { hint = "핑거에러로 쳐보세요"; minLines = 3 })
 
-        col.addView(text("버전 2026.11.12-8" + (if (Trial.isTrial) " 무료 체험판" else "") + " (럭셔리 베이지) · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
+        col.addView(text("버전 2026.11.12-9" + (if (Trial.isTrial) " 무료 체험판" else "") + " (버건디 & 그레이) · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
         setContentView(ScrollView(this).apply { setBackgroundColor(Color.rgb(250, 242, 234)); addView(col) })
         window.statusBarColor = Color.rgb(250, 242, 234)
     }

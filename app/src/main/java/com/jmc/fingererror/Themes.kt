@@ -95,6 +95,13 @@ object Themes {
             radiusDp = 10f, short = "블랙"
         ),
         Theme(
+            "burgundy", "버건디 & 그레이",
+            bg = c(48, 48, 54), key = c(214, 214, 218), special = c(118, 26, 44),
+            pressKey = c(196, 196, 202), pressSpecial = c(100, 20, 36),
+            text = c(118, 26, 44), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(150, 34, 56), radiusDp = 10f, short = "버건디 그레이"
+        ),
+        Theme(
             "pin", "핀스트라이프",
             bg = c(250, 250, 251), key = c(255, 255, 255), special = c(30, 30, 34),
             pressKey = c(236, 236, 238), pressSpecial = c(54, 54, 58),
