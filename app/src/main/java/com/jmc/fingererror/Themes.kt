@@ -130,11 +130,11 @@ object Themes {
 
         // ---- 레트로 10색 (키캡 모양 고르기) ----
         Theme(
-            "rt_cream", "크림 & 오렌지",
-            bg = c(255, 236, 214), key = c(255, 251, 240), special = c(255, 146, 72),
-            pressKey = c(239, 235, 225), pressSpecial = c(234, 134, 66),
-            text = c(110, 80, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 96, 62), radiusDp = 10f, group = "retro", short = "크림 오렌지"
+            "rt_rose", "블랙 & 로즈 골드",
+            bg = c(22, 20, 22), key = c(44, 40, 42), special = c(204, 150, 132),
+            pressKey = c(60, 56, 58), pressSpecial = c(186, 134, 116),
+            text = c(232, 192, 172), specialText = c(44, 30, 28), shadow = Color.TRANSPARENT,
+            accent = c(220, 166, 146), radiusDp = 10f, group = "retro", short = "로즈 골드"
         ),
         Theme(
             "rt_navy", "네이비 & 오렌지",
@@ -165,11 +165,11 @@ object Themes {
             accent = c(255, 196, 90), radiusDp = 10f, group = "retro", short = "체리"
         ),
         Theme(
-            "rt_mono", "모노 + 레드 포인트",
+            "rt_mono", "모노",
             bg = c(44, 44, 48), key = c(78, 78, 86), special = c(240, 240, 236),
             pressKey = c(73, 73, 80), pressSpecial = c(220, 220, 217),
             text = c(246, 246, 242), specialText = c(40, 40, 44), shadow = Color.TRANSPARENT,
-            accent = c(255, 80, 80), radiusDp = 10f, group = "retro", short = "모노"
+            radiusDp = 10f, group = "retro", short = "모노"
         ),
         Theme(
             "rt_milk", "딸기 우유",
