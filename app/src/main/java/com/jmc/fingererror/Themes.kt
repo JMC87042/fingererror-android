@@ -113,13 +113,6 @@ object Themes {
             sprinkle = "sprinkle_ginkgo_"
         ),
         Theme(
-            "beige", "베이지 & 그린 레드",
-            bg = c(232, 221, 200), key = c(248, 241, 226), special = c(30, 74, 48),
-            pressKey = c(232, 222, 204), pressSpecial = c(22, 58, 38),
-            text = c(72, 52, 36), specialText = c(248, 241, 226), shadow = Color.TRANSPARENT,
-            accent = c(176, 30, 36), radiusDp = 10f, bgRes = R.drawable.bg_linen, short = "베이지"
-        ),
-        Theme(
             "pin", "핀스트라이프",
             bg = c(250, 250, 251), key = c(255, 255, 255), special = c(30, 30, 34),
             pressKey = c(236, 236, 238), pressSpecial = c(54, 54, 58),
