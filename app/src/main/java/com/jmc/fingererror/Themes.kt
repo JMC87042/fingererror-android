@@ -77,15 +77,15 @@ object Themes {
             "rt_rose", "블랙 & 로즈 골드",
             bg = c(14, 12, 14), key = c(42, 38, 40), special = c(28, 25, 27),
             pressKey = c(60, 55, 57), pressSpecial = c(46, 42, 44),
-            text = c(226, 176, 156), specialText = c(226, 176, 156), shadow = Color.TRANSPARENT,
+            text = c(246, 172, 142), specialText = c(246, 172, 142), shadow = Color.TRANSPARENT,
             radiusDp = 10f, short = "로즈 골드"
         ),
         Theme(
-            "rosegold", "로즈 골드 & 화이트",
-            bg = c(216, 164, 144), key = c(255, 255, 255), special = c(248, 228, 220),
-            pressKey = c(244, 236, 232), pressSpecial = c(236, 210, 200),
-            text = c(190, 120, 98), specialText = c(176, 108, 88), shadow = Color.TRANSPARENT,
-            accent = c(184, 116, 94), radiusDp = 10f, short = "로즈 화이트"
+            "rosegold", "블랙 & 화이트 로즈",
+            bg = c(12, 11, 13), key = c(255, 255, 255), special = c(252, 234, 226),
+            pressKey = c(240, 234, 232), pressSpecial = c(240, 214, 202),
+            text = c(214, 120, 94), specialText = c(206, 110, 86), shadow = Color.TRANSPARENT,
+            accent = c(236, 146, 116), radiusDp = 10f, short = "화이트 로즈"
         ),
         Theme(
             "rt_mono", "블랙",
