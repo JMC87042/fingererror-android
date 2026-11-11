@@ -65,7 +65,7 @@ object Themes {
             bg = c(30, 40, 110), key = c(250, 248, 244), special = c(170, 20, 72),
             pressKey = c(232, 228, 222), pressSpecial = c(150, 14, 60),
             text = c(0, 62, 146), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(200, 156, 60), radiusDp = 10f, bgRes = R.drawable.bg_stripe
+            accent = c(222, 172, 66), radiusDp = 10f, bgRes = R.drawable.bg_stripe, metal = true
         ),
         Theme(
             "race", "레이싱 레드",
