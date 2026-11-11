@@ -159,6 +159,13 @@ object Themes {
             accent = c(255, 110, 110), radiusDp = 12f
         ),
         Theme(
+            "luxbeige", "럭셔리 베이지",
+            bg = c(205, 187, 167), key = c(251, 246, 239), special = c(228, 214, 198),
+            pressKey = c(238, 230, 220), pressSpecial = c(214, 198, 180),
+            text = c(116, 92, 72), specialText = c(116, 92, 72), shadow = Color.TRANSPARENT,
+            accent = c(196, 162, 108), radiusDp = 10f, bgRes = R.drawable.bg_beige, short = "럭셔리 베이지"
+        ),
+        Theme(
             "rt_cherry", "체리 & 크림",
             bg = c(214, 44, 72), key = c(255, 242, 228), special = c(255, 90, 110),
             pressKey = c(239, 227, 214), pressSpecial = c(234, 82, 101),
