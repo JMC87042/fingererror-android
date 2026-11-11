@@ -125,7 +125,7 @@ object Themes {
             bg = c(16, 18, 24), key = c(30, 30, 33), special = c(190, 18, 28),
             pressKey = c(46, 46, 50), pressSpecial = c(160, 12, 22),
             text = c(236, 236, 238), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(214, 22, 32), radiusDp = 10f, bgRes = R.drawable.bg_race, stitch = c(200, 30, 40)
+            accent = c(214, 22, 32), radiusDp = 10f
         ),
 
         // ---- 레트로 10색 (키캡 모양 고르기) ----
