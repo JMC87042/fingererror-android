@@ -90,6 +90,10 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private val jellyGloss = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.argb(120, 255, 255, 255) }
     private val jellyShadow = Paint(Paint.ANTI_ALIAS_FLAG)
     private val jellyRing = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
+    private val stitchPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE; strokeWidth = 1.1f * resources.displayMetrics.density
+        pathEffect = android.graphics.DashPathEffect(floatArrayOf(3.5f * resources.displayMetrics.density, 2.5f * resources.displayMetrics.density), 0f)
+    }
     private fun blend(a: Int, b: Int, f: Float) = Color.rgb(
         (Color.red(a) + (Color.red(b) - Color.red(a)) * f).toInt(),
         (Color.green(a) + (Color.green(b) - Color.green(a)) * f).toInt(),
@@ -577,6 +581,12 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 val gh = (faceBottom - top)
                 canvas.drawRoundRect(k.rect.left + k.w * 0.12f, top + gh * 0.08f, k.rect.right - k.w * 0.12f, top + gh * 0.30f, r * 0.7f, r * 0.7f, glossPaint)
             }
+            }
+            // 가죽 박음질: 글자 키 윗면 안쪽에 점선
+            if (t.stitch != 0 && !k.special && !isAccent) {
+                stitchPaint.color = t.stitch
+                val si = 3.5f * dp
+                canvas.drawRoundRect(k.rect.left + si, top + si, k.rect.right - si, faceBottom - si, 6f * dp, 6f * dp, stitchPaint)
             }
             // 계절 스티커 (그림만, 누르는 영역과 무관)
             if (t.stickerRes != 0) stickerSpots[k.id]?.let { (fx, fy) ->

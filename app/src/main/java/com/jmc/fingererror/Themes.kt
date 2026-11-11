@@ -30,6 +30,7 @@ data class Theme(
     val sprinkle: String? = null, // 키 모서리 곳곳의 작은 잎 (그림 이름 앞부분)
     val jelly: Boolean = true,   // 3D 키캡 (아래 cap 모양으로 그림)
     val cap: String = "jelly",   // 키캡 모양: jelly 젤리 · round 동글 타자기 · clear 투명 젤리 · clay 클레이 · sa 레트로 기계식
+    val stitch: Int = 0,         // 가죽 박음질 색 (글자 키 안쪽 점선)
     val group: String = "color"  // color: 컬러 · retro: 레트로 (둘 다 키캡 모양을 고를 수 있음) · winter: 겨울 (레트로 기계식 고정)
 ) {
     val menuName get() = short ?: name
@@ -118,6 +119,13 @@ object Themes {
             pressKey = c(236, 236, 238), pressSpecial = c(54, 54, 58),
             text = c(24, 24, 28), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
             accent = c(204, 24, 44), radiusDp = 10f, bgRes = R.drawable.bg_pin, short = "핀스트라이프"
+        ),
+        Theme(
+            "race", "레이싱 레드",
+            bg = c(16, 18, 24), key = c(30, 30, 33), special = c(190, 18, 28),
+            pressKey = c(46, 46, 50), pressSpecial = c(160, 12, 22),
+            text = c(236, 236, 238), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(214, 22, 32), radiusDp = 10f, bgRes = R.drawable.bg_race, stitch = c(200, 30, 40)
         ),
 
         // ---- 레트로 10색 (키캡 모양 고르기) ----
