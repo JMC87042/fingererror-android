@@ -81,11 +81,11 @@ object Themes {
             radiusDp = 10f, short = "로즈 골드"
         ),
         Theme(
-            "rosegold", "블랙 & 화이트 로즈",
-            bg = c(12, 11, 13), key = c(255, 255, 255), special = c(252, 234, 226),
-            pressKey = c(240, 234, 232), pressSpecial = c(240, 214, 202),
-            text = c(214, 120, 94), specialText = c(206, 110, 86), shadow = Color.TRANSPARENT,
-            accent = c(236, 146, 116), radiusDp = 10f, short = "화이트 로즈"
+            "rosegold", "블랙 & 화이트 레드",
+            bg = c(12, 11, 13), key = c(255, 255, 255), special = c(252, 226, 226),
+            pressKey = c(240, 234, 234), pressSpecial = c(240, 206, 206),
+            text = c(214, 26, 42), specialText = c(204, 22, 38), shadow = Color.TRANSPARENT,
+            accent = c(220, 30, 44), radiusDp = 10f, short = "화이트 레드"
         ),
         Theme(
             "rt_mono", "블랙",
