@@ -114,7 +114,7 @@ class MainActivity : Activity() {
                 override fun onNothingSelected(p: android.widget.AdapterView<*>?) {}
             }
         })
-        for ((group, title) in listOf("color" to "컬러 · 키캡 모양 적용", "retro" to "레트로 · 키캡 모양 적용", "winter" to "겨울 · 기계식 키캡")) {
+        for ((group, title) in listOf("color" to "테마 ${Themes.all.size}가지 · 키캡 모양 적용")) {
             col.addView(text(title, 17f).apply { typeface = Themes.font(this@MainActivity) })
             for (t in Themes.all.filter { it.group == group }) {
                 val jb = jelly(Color.WHITE, Color.rgb(232, 220, 206), dp, 16f)
@@ -167,7 +167,7 @@ class MainActivity : Activity() {
         col.addView(text("여기서 연습해 보세요", 16f, true))
         col.addView(EditText(this).apply { hint = "핑거에러로 쳐보세요"; minLines = 3 })
 
-        col.addView(text("버전 2026.11.11-9" + (if (Trial.isTrial) " 무료 체험판" else "") + " (레이싱 레드) · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
+        col.addView(text("버전 2026.11.12" + (if (Trial.isTrial) " 무료 체험판" else "") + " (테마 하나로 합침) · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
         setContentView(ScrollView(this).apply { setBackgroundColor(Color.rgb(250, 242, 234)); addView(col) })
         window.statusBarColor = Color.rgb(250, 242, 234)
     }
