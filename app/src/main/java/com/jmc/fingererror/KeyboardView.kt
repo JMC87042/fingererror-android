@@ -90,6 +90,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private val jellyGloss = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.argb(120, 255, 255, 255) }
     private val jellyShadow = Paint(Paint.ANTI_ALIAS_FLAG)
     private val jellyRing = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
+    private val metalPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val stitchPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE; strokeWidth = 1.1f * resources.displayMetrics.density
         pathEffect = android.graphics.DashPathEffect(floatArrayOf(3.5f * resources.displayMetrics.density, 2.5f * resources.displayMetrics.density), 0f)
@@ -581,6 +582,13 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 val gh = (faceBottom - top)
                 canvas.drawRoundRect(k.rect.left + k.w * 0.12f, top + gh * 0.08f, k.rect.right - k.w * 0.12f, top + gh * 0.30f, r * 0.7f, r * 0.7f, glossPaint)
             }
+            }
+            // 금속 엔터: 비스듬한 빛 띠로 금처럼 반짝이게
+            if (t.metal && isAccent) {
+                metalPaint.shader = android.graphics.LinearGradient(k.rect.left, top, k.rect.right, faceBottom,
+                    intArrayOf(Color.argb(170, 255, 246, 210), Color.argb(0, 255, 255, 255), Color.argb(80, 90, 50, 0), Color.argb(150, 255, 236, 170), Color.argb(70, 80, 40, 0)),
+                    floatArrayOf(0f, 0.32f, 0.52f, 0.72f, 1f), android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, 9f * dp, 9f * dp, metalPaint)
             }
             // 가죽 박음질: 글자 키 윗면 안쪽에 점선
             if (t.stitch != 0 && !k.special && !isAccent) {
