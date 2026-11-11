@@ -460,7 +460,23 @@ class KeyboardView(ctx: Context) : View(ctx) {
             // 그리는 모양만 바뀌고, 누르는 판정 영역(k.rect)은 모든 테마가 같음
             var top = k.rect.top
             val faceBottom: Float
-            if (t.jelly && t.cap == "round") {
+            if (t.jelly && t.cap == "sa") {
+                // 레트로 기계식: 아래로 살짝 진해지는 도톰한 몸통 + 오목한 윗면 (글자는 윗면 가운데)
+                val sr = 7f * dp
+                val push = if (isDown) 2f * dp else 0f
+                jellyShadow.color = Color.argb(if (isDown) 18 else 30, 0, 0, 0)
+                canvas.drawRoundRect(k.rect.left + 1f * dp, k.rect.top + 3f * dp, k.rect.right - 1f * dp, k.rect.bottom + 1.5f * dp, sr, sr, jellyShadow)
+                jellyFace.shader = android.graphics.LinearGradient(0f, k.rect.top + push, 0f, k.rect.bottom,
+                    darken(face, 0.97f), darken(face, 0.86f), android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left, k.rect.top + push, k.rect.right, k.rect.bottom, sr, sr, jellyFace)
+                val ix = 4f * dp
+                top = k.rect.top + 2.5f * dp + push
+                faceBottom = k.rect.bottom - 7f * dp
+                val iw = k.w - ix * 2; val ih = faceBottom - top
+                jellyFace.shader = android.graphics.RadialGradient(k.cx, top + ih * 0.65f, maxOf(iw, ih) * 0.7f,
+                    face, blend(face, Color.WHITE, if (isDown) 0.12f else 0.3f), android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left + ix, top, k.rect.right - ix, faceBottom, sr - 2f * dp, sr - 2f * dp, jellyFace)
+            } else if (t.jelly && t.cap == "round") {
                 // 동글 타자기: 키 칸 안에 동그란(넓은 키는 알약) 캡 + 아랫단 + 안쪽 테두리
                 val d = 5f * dp
                 val fh = k.h - d
@@ -781,6 +797,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         menuPid = pid
         hot = null
         menuOpen = true
+        menuTab = theme.group
         performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
         layoutMenu()
         invalidate()
@@ -789,7 +806,20 @@ class KeyboardView(ctx: Context) : View(ctx) {
     fun closeMenu() {
         if (!menuOpen) return
         menuOpen = false; menuPid = -1; hot = null
+        chipCache.clear()
         invalidate()
+    }
+
+    // 테마 메뉴: 컬러 / 겨울 레트로 두 장 + 키캡 모양 고르기
+    private var menuTab = "color"
+    private val tabColor = RectF()
+    private val tabRetro = RectF()
+    private val capBtn = RectF()
+    private val chipCache = HashMap<String, android.graphics.Bitmap?>()
+    /** 메뉴 미리보기는 작게 읽어서 메모리 아끼기 */
+    private fun chipBmp(name: String) = chipCache.getOrPut(name) {
+        val id = resId(name)
+        if (id == 0) null else BitmapFactory.decodeResource(resources, id, BitmapFactory.Options().apply { inSampleSize = 2 })
     }
 
     private fun choose(id: String) {
@@ -801,6 +831,23 @@ class KeyboardView(ctx: Context) : View(ctx) {
         if (id == "#hand") {
             closeMenu()
             listener?.onHandChange(if (hand == "B") lastSide else "B")
+            return
+        }
+        if (id == "#tab:color" || id == "#tab:retro") {
+            menuTab = id.removePrefix("#tab:")
+            chipCache.clear()
+            layoutMenu(); invalidate()
+            return
+        }
+        if (id == "#cap") {
+            // 키캡 모양 돌려 고르기: 젤리 → 동글 → 투명 → 클레이
+            val caps = Themes.CAPS.map { it.first }
+            val next = caps[(caps.indexOf(Themes.capId(context)) + 1) % caps.size]
+            Themes.setCap(context, next)
+            if (theme.group != "color") Themes.setCurrent(context, Themes.colors.first().id)
+            theme = Themes.current(context, night)
+            chipCache.clear()
+            invalidate()
             return
         }
         Themes.setCurrent(context, id)
@@ -823,12 +870,18 @@ class KeyboardView(ctx: Context) : View(ctx) {
         val titleEnd = panel.left + 12 * dp + menuText.measureText("테마 바꾸기") + 8 * dp
         reportBtn.set(titleEnd, panel.top + 7 * dp, handBtn.left - 6 * dp, panel.top + 29 * dp)
         val pad = 10 * dp; val g = 6 * dp
+        // 두 번째 줄: [컬러] [겨울 레트로] 탭 + 오른쪽 '키캡: 젤리 ▾'
+        val ty = panel.top + 34 * dp
+        tabColor.set(panel.left + pad, ty, panel.left + pad + 58 * dp, ty + 22 * dp)
+        tabRetro.set(tabColor.right + 6 * dp, ty, tabColor.right + 6 * dp + 84 * dp, ty + 22 * dp)
+        capBtn.set(panel.right - pad - 112 * dp, ty, panel.right - pad, ty + 22 * dp)
         val cw = (panel.width() - pad * 2 - g * 4) / 5
-        val rowsTop = panel.top + 32 * dp
-        val rowH = (panel.bottom - rowsTop - 6 * dp) / 2
-        val ih = minOf(cw * 0.75f, rowH - 18 * dp)
+        val rowsTop = ty + 28 * dp
+        val rowH = (panel.bottom - rowsTop - 4 * dp) / 2
+        val ih = minOf(cw * 0.75f, rowH - 17 * dp)
         chipRects.clear(); nameRects.clear()
-        for ((i, t) in Themes.all.withIndex()) {
+        val list = if (menuTab == "retro") Themes.retro else Themes.colors
+        for ((i, t) in list.withIndex()) {
             val x = panel.left + pad + (i % 5) * (cw + g)
             val y = rowsTop + (i / 5) * rowH
             chipRects[t.id] = RectF(x, y, x + cw, y + ih)
@@ -839,6 +892,9 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private fun itemAt(x: Float, y: Float): String? {
         if (handBtn.contains(x, y)) return "#hand"
         if (reportBtn.contains(x, y)) return "#report"
+        if (tabColor.contains(x, y)) return "#tab:color"
+        if (tabRetro.contains(x, y)) return "#tab:retro"
+        if (menuTab == "color" && capBtn.contains(x, y)) return "#cap"
         for ((id, r) in chipRects) {
             val n = nameRects[id] ?: continue
             if (x >= r.left - 3 * dp && x <= r.right + 3 * dp && y >= r.top - 3 * dp && y <= n.bottom + 3 * dp) return id
@@ -897,9 +953,30 @@ class KeyboardView(ctx: Context) : View(ctx) {
         menuText.textAlign = Paint.Align.CENTER
         menuText.textSize = 11f * dp
         menuText.color = Color.rgb(60, 62, 70)
-        for (t in Themes.all) {
+        // 탭 + 키캡 모양 버튼
+        val capNow = Themes.capId(context)
+        for ((rect, tab, label) in listOf(Triple(tabColor, "color", "컬러"), Triple(tabRetro, "retro", "겨울 레트로"))) {
+            val on = menuTab == tab
+            menuPaint.style = Paint.Style.FILL
+            menuPaint.color = if (on) Color.rgb(255, 160, 132) else Color.rgb(238, 234, 230)
+            canvas.drawRoundRect(rect, rect.height() / 2, rect.height() / 2, menuPaint)
+            menuText.textAlign = Paint.Align.CENTER
+            menuText.textSize = 12.5f * dp
+            menuText.color = if (on) Color.WHITE else Color.rgb(90, 84, 80)
+            canvas.drawText(label, rect.centerX(), rect.centerY() + 4.5f * dp, menuText)
+        }
+        if (menuTab == "color") {
+            menuPaint.color = if (hot == "#cap") Color.rgb(255, 214, 200) else Color.rgb(255, 238, 228)
+            canvas.drawRoundRect(capBtn, capBtn.height() / 2, capBtn.height() / 2, menuPaint)
+            menuText.textSize = 12.5f * dp
+            menuText.color = Color.rgb(196, 90, 64)
+            canvas.drawText("키캡: " + Themes.capName(capNow) + " ▾", capBtn.centerX(), capBtn.centerY() + 4.5f * dp, menuText)
+        }
+        menuText.textSize = 11f * dp
+        menuText.color = Color.rgb(60, 62, 70)
+        for (t in (if (menuTab == "retro") Themes.retro else Themes.colors)) {
             val r = chipRects[t.id] ?: continue
-            bmp(resId("theme_" + t.id))?.let { b -> canvas.drawBitmap(b, null, r, bmpPaint) }
+            chipBmp(Themes.previewName(t, capNow))?.let { b -> canvas.drawBitmap(b, null, r, bmpPaint) }
             val ring = when (t.id) { hot -> Color.rgb(255, 120, 90); cur -> Color.rgb(52, 199, 89); else -> 0 }
             if (ring != 0) {
                 menuPaint.style = Paint.Style.STROKE

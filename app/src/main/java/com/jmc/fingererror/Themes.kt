@@ -29,7 +29,8 @@ data class Theme(
     val spaceRes: Int = 0,      // 스페이스바 팻핑이 (밤 모자 등)
     val sprinkle: String? = null, // 키 모서리 곳곳의 작은 잎 (그림 이름 앞부분)
     val jelly: Boolean = true,   // 3D 키캡 (아래 cap 모양으로 그림)
-    val cap: String = "jelly"    // 키캡 모양: jelly 젤리 · round 동글 타자기 · clear 투명 젤리 · clay 클레이
+    val cap: String = "jelly",   // 키캡 모양: jelly 젤리 · round 동글 타자기 · clear 투명 젤리 · clay 클레이 · sa 레트로 기계식
+    val group: String = "color"  // color: 컬러 테마 (키캡 모양을 고를 수 있음) · retro: 겨울 레트로 (레트로 기계식 고정)
 ) {
     val menuName get() = short ?: name
 }
@@ -39,7 +40,7 @@ object Themes {
 
     // 1. 크림 젤리 (기본) — 말랑한 크림색 키캡, 복숭아 포인트
     private val defaultLight = Theme(
-        "default", "크림 젤리",
+        "default", "크림",
         bg = c(246, 232, 218), key = c(255, 250, 242), special = c(255, 204, 182),
         pressKey = c(244, 234, 220), pressSpecial = c(246, 184, 160),
         text = c(112, 78, 60), specialText = c(156, 72, 50), shadow = Color.TRANSPARENT,
@@ -48,7 +49,7 @@ object Themes {
     )
     // 폰이 다크모드일 때의 기본 (그레이 젤리)
     private val defaultDark = Theme(
-        "default", "크림 젤리",
+        "default", "크림",
         bg = c(26, 26, 30), key = c(92, 92, 100), special = c(62, 62, 70),
         pressKey = c(72, 72, 80), pressSpecial = c(84, 84, 92),
         text = Color.WHITE, specialText = Color.WHITE, shadow = Color.TRANSPARENT,
@@ -59,7 +60,7 @@ object Themes {
     val all: List<Theme> = listOf(
         defaultLight,
         Theme(
-            "oled", "블랙 젤리",
+            "oled", "블랙",
             bg = Color.BLACK, key = c(40, 40, 46), special = c(26, 26, 30),
             pressKey = c(62, 62, 68), pressSpecial = c(46, 46, 52),
             text = c(226, 226, 222), specialText = c(160, 160, 156), shadow = Color.TRANSPARENT,
@@ -70,17 +71,17 @@ object Themes {
             bg = c(132, 222, 206), key = c(236, 252, 248), special = c(90, 200, 186),
             pressKey = c(212, 240, 234), pressSpecial = c(74, 184, 170),
             text = c(30, 96, 92), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(44, 170, 190), radiusDp = 10f, cap = "round", short = "동글 민트"
+            accent = c(44, 170, 190), radiusDp = 10f
         ),
         Theme(
-            "peach", "투명 피치 젤리",
+            "peach", "피치",
             bg = c(255, 214, 204), key = c(255, 176, 160), special = c(255, 140, 130),
             pressKey = c(250, 150, 134), pressSpecial = c(236, 116, 106),
             text = c(150, 50, 46), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 110, 110), radiusDp = 12f, cap = "clear", short = "투명 피치"
+            accent = c(255, 110, 110), radiusDp = 12f
         ),
         Theme(
-            "lime", "라임 젤리",
+            "lime", "라임",
             bg = c(214, 236, 190), key = c(249, 252, 241), special = c(176, 220, 110),
             pressKey = c(232, 242, 218), pressSpecial = c(156, 204, 90),
             text = c(60, 90, 40), specialText = c(40, 70, 24), shadow = Color.TRANSPARENT,
@@ -88,11 +89,11 @@ object Themes {
             radiusDp = 10f
         ),
         Theme(
-            "lavender", "라벤더 클레이",
+            "lavender", "라벤더",
             bg = c(232, 224, 248), key = c(242, 235, 253), special = c(198, 180, 240),
             pressKey = c(226, 216, 246), pressSpecial = c(180, 160, 230),
             text = c(100, 80, 150), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(160, 130, 232), radiusDp = 12f, cap = "clay", short = "라벤더 클레이"
+            accent = c(160, 130, 232), radiusDp = 12f
         ),
         Theme(
             "coral", "가을 코랄",
@@ -113,20 +114,92 @@ object Themes {
             sprinkle = "sprinkle_ginkgo_"
         ),
         Theme(
-            "winter", "겨울 눈사람",
-            bg = c(170, 200, 240), key = c(252, 254, 255), special = c(196, 218, 248),
-            pressKey = c(226, 238, 252), pressSpecial = c(176, 202, 240),
-            text = c(70, 110, 180), specialText = c(50, 90, 160), shadow = Color.argb(110, 100, 140, 200),
-            accent = c(120, 160, 230), radiusDp = 12f,
-            bgRes = R.drawable.bg_winter, enterRes = R.drawable.enter_snowman, stickerRes = R.drawable.sticker_snow, gloss = true
+            "sky", "하늘",
+            bg = c(200, 226, 252), key = c(255, 255, 255), special = c(120, 180, 244),
+            pressKey = c(232, 242, 252), pressSpecial = c(100, 164, 232),
+            text = c(60, 110, 170), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 128, 170), radiusDp = 10f
         ),
         Theme(
-            "red", "겨울 레드",
-            bg = c(118, 14, 24), key = c(255, 250, 242), special = c(214, 52, 58),
+            "cocoa", "코코아",
+            bg = c(232, 214, 196), key = c(255, 249, 240), special = c(176, 128, 96),
+            pressKey = c(244, 234, 220), pressSpecial = c(156, 110, 80),
+            text = c(110, 72, 50), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(150, 96, 64), radiusDp = 10f
+        ),
+
+        // ---- 겨울 레트로 (레트로 기계식 키캡: 오목한 윗면 + 도톰한 몸통) ----
+        Theme(
+            "cherry", "체리 & 크림",
+            bg = c(214, 44, 72), key = c(255, 242, 228), special = c(255, 90, 110),
+            pressKey = c(240, 224, 208), pressSpecial = c(236, 72, 94),
+            text = c(170, 40, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 196, 90), cap = "sa", group = "retro", short = "체리"
+        ),
+        Theme(
+            "milk", "딸기 우유",
+            bg = c(255, 206, 220), key = c(255, 255, 255), special = c(255, 116, 156),
+            pressKey = c(246, 236, 240), pressSpecial = c(240, 96, 138),
+            text = c(200, 70, 110), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 72, 124), cap = "sa", group = "retro"
+        ),
+        Theme(
+            "royal", "로열 블루 & 골드",
+            bg = c(46, 84, 176), key = c(80, 124, 220), special = c(255, 204, 64),
+            pressKey = c(66, 106, 196), pressSpecial = c(236, 184, 44),
+            text = Color.WHITE, specialText = c(90, 60, 10), shadow = Color.TRANSPARENT,
+            accent = c(255, 204, 64), cap = "sa", group = "retro", short = "로열 블루"
+        ),
+        Theme(
+            "winter", "눈사람",
+            bg = c(170, 200, 240), key = c(252, 254, 255), special = c(150, 190, 240),
+            pressKey = c(226, 238, 252), pressSpecial = c(130, 172, 228),
+            text = c(60, 100, 170), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(110, 160, 232), cap = "sa", group = "retro",
+            bgRes = R.drawable.bg_winter, enterRes = R.drawable.enter_snowman, stickerRes = R.drawable.sticker_snow
+        ),
+        Theme(
+            "red", "크리스마스",
+            bg = c(150, 20, 32), key = c(255, 248, 238), special = c(214, 52, 58),
             pressKey = c(240, 226, 214), pressSpecial = c(190, 40, 48),
-            text = c(30, 112, 64), specialText = c(255, 246, 236), shadow = Color.argb(140, 40, 0, 0),
-            accent = c(34, 112, 66), radiusDp = 12f,
-            bgRes = R.drawable.bg_red, enterRes = R.drawable.enter_snowman_red, stickerRes = R.drawable.sticker_holly, gloss = true
+            text = c(40, 120, 70), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(34, 130, 70), cap = "sa", group = "retro",
+            bgRes = R.drawable.bg_red, enterRes = R.drawable.enter_snowman_red, stickerRes = R.drawable.sticker_holly
+        ),
+        Theme(
+            "holly", "홀리 그린",
+            bg = c(30, 110, 70), key = c(255, 250, 240), special = c(220, 50, 56),
+            pressKey = c(240, 232, 218), pressSpecial = c(196, 40, 48),
+            text = c(30, 100, 60), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(220, 50, 56), cap = "sa", group = "retro", short = "홀리"
+        ),
+        Theme(
+            "choco", "핫초코",
+            bg = c(110, 70, 50), key = c(255, 248, 236), special = c(170, 110, 80),
+            pressKey = c(240, 228, 212), pressSpecial = c(150, 94, 66),
+            text = c(110, 70, 50), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(240, 150, 170), cap = "sa", group = "retro"
+        ),
+        Theme(
+            "aurora", "오로라",
+            bg = c(40, 44, 100), key = c(214, 240, 250), special = c(140, 110, 230),
+            pressKey = c(190, 222, 238), pressSpecial = c(120, 92, 210),
+            text = c(50, 70, 130), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(70, 206, 170), cap = "sa", group = "retro"
+        ),
+        Theme(
+            "ginger", "진저브레드",
+            bg = c(196, 120, 70), key = c(255, 250, 244), special = c(160, 90, 50),
+            pressKey = c(240, 230, 218), pressSpecial = c(140, 76, 40),
+            text = c(150, 85, 45), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(220, 60, 60), cap = "sa", group = "retro", short = "진저"
+        ),
+        Theme(
+            "mono", "기본 블랙",
+            bg = c(30, 30, 34), key = c(70, 70, 76), special = c(48, 48, 52),
+            pressKey = c(96, 96, 102), pressSpecial = c(70, 70, 76),
+            text = c(246, 246, 242), specialText = c(246, 246, 242), shadow = Color.TRANSPARENT,
+            cap = "sa", group = "retro"
         )
     )
 
@@ -148,10 +221,24 @@ object Themes {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString("theme", id).apply()
     }
 
-    /** 기본 테마는 폰의 다크모드를 따라감 */
+    val colors get() = all.filter { it.group == "color" }
+    val retro get() = all.filter { it.group == "retro" }
+
+    /** 컬러 테마의 키캡 모양 (드롭다운) */
+    val CAPS = listOf("jelly" to "젤리", "round" to "동글 타자기", "clear" to "투명 젤리", "clay" to "클레이")
+    fun capName(id: String) = CAPS.firstOrNull { it.first == id }?.second ?: "젤리"
+    fun capId(ctx: Context): String =
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString("cap", "jelly") ?: "jelly"
+    fun setCap(ctx: Context, id: String) {
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString("cap", id).apply()
+    }
+    /** 미리보기 그림 이름 (컬러 테마는 키캡 모양마다 따로) */
+    fun previewName(t: Theme, cap: String) = if (t.group == "color") "theme_${t.id}_$cap" else "theme_${t.id}"
+
+    /** 기본 테마는 폰의 다크모드를 따라감. 컬러 테마는 고른 키캡 모양으로 */
     fun current(ctx: Context, night: Boolean): Theme {
         val id = currentId(ctx)
-        if (id == "default") return if (night) defaultDark else defaultLight
-        return all.firstOrNull { it.id == id } ?: defaultLight
+        val t = if (id == "default") (if (night) defaultDark else defaultLight) else (all.firstOrNull { it.id == id } ?: defaultLight)
+        return if (t.group == "color") t.copy(cap = capId(ctx)) else t
     }
 }
