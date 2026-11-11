@@ -81,6 +81,13 @@ object Themes {
             radiusDp = 10f, short = "로즈 골드"
         ),
         Theme(
+            "rosegold", "로즈 골드 & 화이트",
+            bg = c(216, 164, 144), key = c(255, 255, 255), special = c(248, 228, 220),
+            pressKey = c(244, 236, 232), pressSpecial = c(236, 210, 200),
+            text = c(190, 120, 98), specialText = c(176, 108, 88), shadow = Color.TRANSPARENT,
+            accent = c(184, 116, 94), radiusDp = 10f, short = "로즈 화이트"
+        ),
+        Theme(
             "rt_mono", "블랙",
             bg = c(30, 30, 34), key = c(70, 70, 76), special = c(50, 50, 55),
             pressKey = c(92, 92, 98), pressSpecial = c(70, 70, 76),
