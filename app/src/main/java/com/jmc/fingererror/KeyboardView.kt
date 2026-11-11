@@ -814,6 +814,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private var menuTab = "color"
     private val tabColor = RectF()
     private val tabRetro = RectF()
+    private val tabWinter = RectF()
     private val capBtn = RectF()
     private val chipCache = HashMap<String, android.graphics.Bitmap?>()
     /** 메뉴 미리보기는 작게 읽어서 메모리 아끼기 */
@@ -833,7 +834,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
             listener?.onHandChange(if (hand == "B") lastSide else "B")
             return
         }
-        if (id == "#tab:color" || id == "#tab:retro") {
+        if (id.startsWith("#tab:")) {
             menuTab = id.removePrefix("#tab:")
             chipCache.clear()
             layoutMenu(); invalidate()
@@ -844,7 +845,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
             val caps = Themes.CAPS.map { it.first }
             val next = caps[(caps.indexOf(Themes.capId(context)) + 1) % caps.size]
             Themes.setCap(context, next)
-            if (theme.group != "color") Themes.setCurrent(context, Themes.colors.first().id)
+            if (!Themes.capped(theme)) Themes.setCurrent(context, Themes.group(menuTab).firstOrNull()?.id ?: Themes.colors.first().id)
             theme = Themes.current(context, night)
             chipCache.clear()
             invalidate()
@@ -872,15 +873,16 @@ class KeyboardView(ctx: Context) : View(ctx) {
         val pad = 10 * dp; val g = 6 * dp
         // 두 번째 줄: [컬러] [겨울 레트로] 탭 + 오른쪽 '키캡: 젤리 ▾'
         val ty = panel.top + 34 * dp
-        tabColor.set(panel.left + pad, ty, panel.left + pad + 58 * dp, ty + 22 * dp)
-        tabRetro.set(tabColor.right + 6 * dp, ty, tabColor.right + 6 * dp + 84 * dp, ty + 22 * dp)
+        tabColor.set(panel.left + pad, ty, panel.left + pad + 50 * dp, ty + 22 * dp)
+        tabRetro.set(tabColor.right + 5 * dp, ty, tabColor.right + 5 * dp + 56 * dp, ty + 22 * dp)
+        tabWinter.set(tabRetro.right + 5 * dp, ty, tabRetro.right + 5 * dp + 50 * dp, ty + 22 * dp)
         capBtn.set(panel.right - pad - 112 * dp, ty, panel.right - pad, ty + 22 * dp)
         val cw = (panel.width() - pad * 2 - g * 4) / 5
         val rowsTop = ty + 28 * dp
         val rowH = (panel.bottom - rowsTop - 4 * dp) / 2
         val ih = minOf(cw * 0.75f, rowH - 17 * dp)
         chipRects.clear(); nameRects.clear()
-        val list = if (menuTab == "retro") Themes.retro else Themes.colors
+        val list = Themes.group(menuTab)
         for ((i, t) in list.withIndex()) {
             val x = panel.left + pad + (i % 5) * (cw + g)
             val y = rowsTop + (i / 5) * rowH
@@ -894,7 +896,8 @@ class KeyboardView(ctx: Context) : View(ctx) {
         if (reportBtn.contains(x, y)) return "#report"
         if (tabColor.contains(x, y)) return "#tab:color"
         if (tabRetro.contains(x, y)) return "#tab:retro"
-        if (menuTab == "color" && capBtn.contains(x, y)) return "#cap"
+        if (tabWinter.contains(x, y)) return "#tab:winter"
+        if (menuTab != "winter" && capBtn.contains(x, y)) return "#cap"
         for ((id, r) in chipRects) {
             val n = nameRects[id] ?: continue
             if (x >= r.left - 3 * dp && x <= r.right + 3 * dp && y >= r.top - 3 * dp && y <= n.bottom + 3 * dp) return id
@@ -955,7 +958,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         menuText.color = Color.rgb(60, 62, 70)
         // 탭 + 키캡 모양 버튼
         val capNow = Themes.capId(context)
-        for ((rect, tab, label) in listOf(Triple(tabColor, "color", "컬러"), Triple(tabRetro, "retro", "겨울 레트로"))) {
+        for ((rect, tab, label) in listOf(Triple(tabColor, "color", "컬러"), Triple(tabRetro, "retro", "레트로"), Triple(tabWinter, "winter", "겨울"))) {
             val on = menuTab == tab
             menuPaint.style = Paint.Style.FILL
             menuPaint.color = if (on) Color.rgb(255, 160, 132) else Color.rgb(238, 234, 230)
@@ -965,7 +968,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
             menuText.color = if (on) Color.WHITE else Color.rgb(90, 84, 80)
             canvas.drawText(label, rect.centerX(), rect.centerY() + 4.5f * dp, menuText)
         }
-        if (menuTab == "color") {
+        if (menuTab != "winter") {
             menuPaint.color = if (hot == "#cap") Color.rgb(255, 214, 200) else Color.rgb(255, 238, 228)
             canvas.drawRoundRect(capBtn, capBtn.height() / 2, capBtn.height() / 2, menuPaint)
             menuText.textSize = 12.5f * dp
@@ -974,7 +977,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         }
         menuText.textSize = 11f * dp
         menuText.color = Color.rgb(60, 62, 70)
-        for (t in (if (menuTab == "retro") Themes.retro else Themes.colors)) {
+        for (t in Themes.group(menuTab)) {
             val r = chipRects[t.id] ?: continue
             chipBmp(Themes.previewName(t, capNow))?.let { b -> canvas.drawBitmap(b, null, r, bmpPaint) }
             val ring = when (t.id) { hot -> Color.rgb(255, 120, 90); cur -> Color.rgb(52, 199, 89); else -> 0 }
