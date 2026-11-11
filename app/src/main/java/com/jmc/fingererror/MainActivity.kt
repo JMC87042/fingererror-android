@@ -144,12 +144,6 @@ class MainActivity : Activity() {
             }
         }
         refreshCards()
-                }
-            }
-            cards.add(Pair(t.id, jb.second))
-            col.addView(card)
-        }
-        refreshCards()
         col.addView(text("크림 테마는 폰의 다크모드를 따라가요. 고른 테마는 키보드를 다시 열면 적용돼요. 키보드를 쓰다가 스페이스바 오른쪽 팻핑이를 꾹 누르면 바로 바꿀 수도 있어요.", 13f).apply { setTextColor(Color.GRAY) })
 
         col.addView(android.widget.Switch(this).apply {
