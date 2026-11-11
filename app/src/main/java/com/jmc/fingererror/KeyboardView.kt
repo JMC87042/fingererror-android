@@ -514,9 +514,11 @@ class KeyboardView(ctx: Context) : View(ctx) {
                     Color.argb(if (isDown) 190 else 140, Color.red(face), Color.green(face), Color.blue(face)),
                     android.graphics.Shader.TileMode.CLAMP)
                 canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, jellyFace)
-                jellyRing.color = Color.argb(215, 255, 255, 255); jellyRing.strokeWidth = 1.3f * dp
-                canvas.drawRoundRect(k.rect.left + 0.8f * dp, top + 0.8f * dp, k.rect.right - 0.8f * dp, faceBottom - 0.8f * dp, jr, jr, jellyRing)
-                if (!isDown) {
+                if (!t.noRim) {
+                    jellyRing.color = Color.argb(215, 255, 255, 255); jellyRing.strokeWidth = 1.3f * dp
+                    canvas.drawRoundRect(k.rect.left + 0.8f * dp, top + 0.8f * dp, k.rect.right - 0.8f * dp, faceBottom - 0.8f * dp, jr, jr, jellyRing)
+                }
+                if (!isDown && !t.noRim) {
                     val gh = faceBottom - top
                     jellyGloss.shader = null; jellyGloss.color = Color.argb(190, 255, 255, 255)
                     val ow = minOf(k.w * 0.28f, 14f * dp); val oh = gh * 0.13f
@@ -534,8 +536,10 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 jellyFace.shader = android.graphics.LinearGradient(0f, top, 0f, faceBottom,
                     blend(face, Color.WHITE, if (isDown) 0.05f else 0.28f), darken(face, 0.95f), android.graphics.Shader.TileMode.CLAMP)
                 canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, jellyFace)
-                jellyRing.color = Color.argb(if (isDown) 40 else 110, 255, 255, 255); jellyRing.strokeWidth = 1.5f * dp
-                canvas.drawRoundRect(k.rect.left + 1f * dp, top + 1f * dp, k.rect.right - 1f * dp, faceBottom - 1f * dp, jr - dp, jr - dp, jellyRing)
+                if (!t.noRim) {
+                    jellyRing.color = Color.argb(if (isDown) 40 else 110, 255, 255, 255); jellyRing.strokeWidth = 1.5f * dp
+                    canvas.drawRoundRect(k.rect.left + 1f * dp, top + 1f * dp, k.rect.right - 1f * dp, faceBottom - 1f * dp, jr - dp, jr - dp, jellyRing)
+                }
             } else if (t.jelly) {
                 // 3D 젤리 키캡: 바닥 그림자 → 아랫단(두께) → 윗면(위가 밝은 그라데이션) → 반짝임
                 // 그리는 모양만 입체, 누르는 판정 영역(k.rect)은 그대로
@@ -554,7 +558,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 jellyFace.shader = android.graphics.LinearGradient(0f, top, 0f, faceBottom, hi, face, android.graphics.Shader.TileMode.CLAMP)
                 canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, jellyFace)
                 if (t.rim != 0) canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, rimPaint)
-                if (!isDown) {
+                if (!isDown && !t.noRim) {
                     // 위에서 아래로 사라지는 반짝임 (어두운 테마는 은은하게)
                     val gh = faceBottom - top
                     val ga = if (Color.red(t.bg) + Color.green(t.bg) + Color.blue(t.bg) < 120) 40 else 150

@@ -32,6 +32,7 @@ data class Theme(
     val cap: String = "jelly",   // 키캡 모양: jelly 젤리 · round 동글 타자기 · clear 투명 젤리 · clay 클레이 · sa 레트로 기계식
     val stitch: Int = 0,         // 가죽 박음질 색 (글자 키 안쪽 점선)
     val metal: Boolean = false,  // 엔터 키를 금속처럼 반짝이게
+    val noRim: Boolean = false,  // 키 가장자리 흰 선·흰 반짝임 없이
     val group: String = "color"  // color: 컬러 · retro: 레트로 (둘 다 키캡 모양을 고를 수 있음) · winter: 겨울 (레트로 기계식 고정)
 ) {
     val menuName get() = short ?: name
@@ -209,28 +210,28 @@ object Themes {
             bg = c(150, 150, 156), key = c(118, 26, 44), special = c(70, 70, 76),
             pressKey = c(106, 23, 39), pressSpecial = c(61, 61, 66),
             text = Color.WHITE, specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(150, 34, 56), radiusDp = 10f, short = "버건디 키", group = "special"
+            accent = c(150, 34, 56), radiusDp = 10f, short = "버건디 키", group = "special", noRim = true
         ),
         Theme(
             "bur_silver", "실버 키",
             bg = c(110, 22, 40), key = c(206, 206, 210), special = c(150, 150, 156),
             pressKey = c(185, 185, 189), pressSpecial = c(132, 132, 137),
             text = c(110, 22, 40), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(70, 70, 76), radiusDp = 10f, short = "실버 키", group = "special"
+            accent = c(70, 70, 76), radiusDp = 10f, short = "실버 키", group = "special", noRim = true
         ),
         Theme(
             "bur_charcoal", "버건디 차콜",
             bg = c(72, 72, 78), key = c(120, 28, 48), special = c(40, 40, 44),
             pressKey = c(108, 25, 43), pressSpecial = c(35, 35, 38),
             text = c(236, 226, 228), specialText = c(210, 210, 216), shadow = Color.TRANSPARENT,
-            accent = c(150, 150, 158), radiusDp = 10f, short = "버건디 차콜", group = "special"
+            accent = c(150, 150, 158), radiusDp = 10f, short = "버건디 차콜", group = "special", noRim = true
         ),
         Theme(
             "bur_gold", "버건디 실버",
             bg = c(70, 12, 26), key = c(128, 24, 46), special = c(92, 16, 32),
             pressKey = c(115, 21, 41), pressSpecial = c(80, 14, 28),
             text = c(232, 234, 240), specialText = c(214, 216, 224), shadow = Color.TRANSPARENT,
-            accent = c(158, 162, 176), radiusDp = 10f, short = "버건디 실버", group = "special"
+            accent = c(158, 162, 176), radiusDp = 10f, short = "버건디 실버", group = "special", noRim = true
         ),
     )
 
