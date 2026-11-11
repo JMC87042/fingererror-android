@@ -44,7 +44,7 @@ object Themes {
         bg = c(40, 30, 80), key = c(36, 32, 56), special = c(112, 82, 204),
         pressKey = c(56, 50, 84), pressSpecial = c(96, 68, 184),
         text = c(226, 218, 255), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-        accent = c(214, 172, 76), radiusDp = 10f, bgRes = R.drawable.bg_kit
+        accent = c(196, 152, 64), radiusDp = 10f, bgRes = R.drawable.bg_kit
     )
     // 폰이 다크모드일 때의 기본 (그레이 젤리)
     private val defaultDark = Theme(
@@ -59,11 +59,11 @@ object Themes {
     val all: List<Theme> = listOf(
         defaultLight,
         Theme(
-            "oled", "블랙",
-            bg = Color.BLACK, key = c(40, 40, 46), special = c(26, 26, 30),
-            pressKey = c(62, 62, 68), pressSpecial = c(46, 46, 52),
-            text = c(226, 226, 222), specialText = c(160, 160, 156), shadow = Color.TRANSPARENT,
-            side = c(18, 18, 22), sideSpecial = c(10, 10, 12), radiusDp = 10f
+            "redblue", "레드 블루",
+            bg = c(30, 40, 110), key = c(250, 248, 244), special = c(170, 20, 72),
+            pressKey = c(232, 228, 222), pressSpecial = c(150, 14, 60),
+            text = c(0, 62, 146), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(200, 156, 60), radiusDp = 10f, bgRes = R.drawable.bg_stripe
         ),
         Theme(
             "mint", "민트 소다",
