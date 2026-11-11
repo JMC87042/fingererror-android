@@ -12,8 +12,8 @@ object Anniversary {
     private val countCopy = mapOf(
         "default" to ("{t}! 오타 {n}개 기념일" to "팻핑이랑 같이 고쳤어요"),
         "oled" to ("{t}. 오타 {n}개" to "조용히, 확실하게 고쳤어요"),
-        "mint" to ("{t}~ 오타 {n}개" to "레트로하게 고쳐드렸어요"),
-        "navy" to ("{t}! 오타 {n}개 홈런" to "팻핑이가 다 받아냈어요"),
+        "mint" to ("{t}~ 오타 {n}개" to "톡 쏘게 고쳐드렸어요"),
+        "peach" to ("{t}! 오타 {n}개 말랑하게" to "복숭아처럼 폭신하게 고쳤어요"),
         "lime" to ("{t}! 오타 {n}개" to "새싹처럼 쑥쑥 맞춰지는 중"),
         "lavender" to ("{t}♡ 오타 {n}개" to "향기롭게 고쳐줬어요"),
         "coral" to ("{t}! 밤 {n}톨 모았다" to "오타 {n}개 고쳤어요"),

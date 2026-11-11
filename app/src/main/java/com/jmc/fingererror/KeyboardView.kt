@@ -84,6 +84,16 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private val bmpCache = HashMap<Int, android.graphics.Bitmap?>()
     private fun bmp(res: Int) = if (res == 0) null else bmpCache.getOrPut(res) { BitmapFactory.decodeResource(resources, res) }
     private val glossPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.argb(90, 255, 255, 255) }
+    // 3D 젤리 키캡
+    private val JELLY_DEPTH = 4f
+    private val jellyFace = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val jellyGloss = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.argb(120, 255, 255, 255) }
+    private val jellyShadow = Paint(Paint.ANTI_ALIAS_FLAG)
+    private fun blend(a: Int, b: Int, f: Float) = Color.rgb(
+        (Color.red(a) + (Color.red(b) - Color.red(a)) * f).toInt(),
+        (Color.green(a) + (Color.green(b) - Color.green(a)) * f).toInt(),
+        (Color.blue(a) + (Color.blue(b) - Color.blue(a)) * f).toInt())
+    private fun darken(c: Int, f: Float) = Color.rgb((Color.red(c) * f).toInt(), (Color.green(c) * f).toInt(), (Color.blue(c) * f).toInt())
     /** 계절 스티커 자리 (키 안에서의 비율) */
     private val stickerSpots = mapOf("ㅂ" to (0.08f to 0.12f), "ㅔ" to (0.92f to 0.12f),
         "SHIFT" to (0.10f to 0.15f), "BACK" to (0.90f to 0.15f), "SPACE" to (0.96f to 0.20f))
@@ -449,6 +459,33 @@ class KeyboardView(ctx: Context) : View(ctx) {
             // 그리는 모양만 바뀌고, 누르는 판정 영역(k.rect)은 모든 테마가 같음
             var top = k.rect.top
             val faceBottom: Float
+            if (t.jelly) {
+                // 3D 젤리 키캡: 바닥 그림자 → 아랫단(두께) → 윗면(위가 밝은 그라데이션) → 반짝임
+                // 그리는 모양만 입체, 누르는 판정 영역(k.rect)은 그대로
+                val d = JELLY_DEPTH * dp
+                val jr = maxOf(r, 9f * dp)
+                val base = if (k.special || isAccent) (if (t.sideSpecial != 0) t.sideSpecial else darken(face, 0.78f))
+                           else (if (t.side != 0) t.side else darken(t.key, 0.84f))
+                jellyShadow.color = Color.argb(if (Color.red(t.bg) + Color.green(t.bg) + Color.blue(t.bg) < 120) 120 else 55,
+                    Color.red(base) / 3, Color.green(base) / 3, Color.blue(base) / 3)
+                canvas.drawRoundRect(k.rect.left + 0.5f * dp, k.rect.top + d + 1.6f * dp, k.rect.right - 0.5f * dp, k.rect.bottom + 1.6f * dp, jr, jr, jellyShadow)
+                keyPaint.color = base
+                canvas.drawRoundRect(k.rect.left, k.rect.top + d, k.rect.right, k.rect.bottom, jr, jr, keyPaint)
+                if (isDown) top += d * 0.75f
+                faceBottom = top + k.h - d
+                val hi = blend(face, Color.WHITE, if (isDown) 0.10f else 0.42f)
+                jellyFace.shader = android.graphics.LinearGradient(0f, top, 0f, faceBottom, hi, face, android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, jellyFace)
+                if (t.rim != 0) canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, rimPaint)
+                if (!isDown) {
+                    // 위에서 아래로 사라지는 반짝임 (어두운 테마는 은은하게)
+                    val gh = faceBottom - top
+                    val ga = if (Color.red(t.bg) + Color.green(t.bg) + Color.blue(t.bg) < 120) 40 else 150
+                    jellyGloss.shader = android.graphics.LinearGradient(0f, top + gh * 0.06f, 0f, top + gh * 0.34f,
+                        Color.argb(ga, 255, 255, 255), Color.argb(0, 255, 255, 255), android.graphics.Shader.TileMode.CLAMP)
+                    canvas.drawRoundRect(k.rect.left + k.w * 0.12f, top + gh * 0.06f, k.rect.right - k.w * 0.12f, top + gh * 0.34f, jr * 0.6f, jr * 0.6f, jellyGloss)
+                }
+            } else {
             if (depth > 0f) {
                 keyPaint.color = if (k.special || isAccent) t.sideSpecial else t.side
                 canvas.drawRoundRect(k.rect.left, k.rect.top + depth, k.rect.right, k.rect.bottom, r, r, keyPaint)
@@ -467,6 +504,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
             if (t.gloss && !isDown) {
                 val gh = (faceBottom - top)
                 canvas.drawRoundRect(k.rect.left + k.w * 0.12f, top + gh * 0.08f, k.rect.right - k.w * 0.12f, top + gh * 0.30f, r * 0.7f, r * 0.7f, glossPaint)
+            }
             }
             // 계절 스티커 (그림만, 누르는 영역과 무관)
             if (t.stickerRes != 0) stickerSpots[k.id]?.let { (fx, fy) ->
