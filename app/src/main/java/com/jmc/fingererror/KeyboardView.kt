@@ -89,6 +89,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private val jellyFace = Paint(Paint.ANTI_ALIAS_FLAG)
     private val jellyGloss = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.argb(120, 255, 255, 255) }
     private val jellyShadow = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val jellyRing = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private fun blend(a: Int, b: Int, f: Float) = Color.rgb(
         (Color.red(a) + (Color.red(b) - Color.red(a)) * f).toInt(),
         (Color.green(a) + (Color.green(b) - Color.green(a)) * f).toInt(),
@@ -459,7 +460,62 @@ class KeyboardView(ctx: Context) : View(ctx) {
             // 그리는 모양만 바뀌고, 누르는 판정 영역(k.rect)은 모든 테마가 같음
             var top = k.rect.top
             val faceBottom: Float
-            if (t.jelly) {
+            if (t.jelly && t.cap == "round") {
+                // 동글 타자기: 키 칸 안에 동그란(넓은 키는 알약) 캡 + 아랫단 + 안쪽 테두리
+                val d = 5f * dp
+                val fh = k.h - d
+                val rr = minOf(k.w, fh) / 2
+                val base = if (k.special || isAccent) darken(face, 0.74f) else darken(face, 0.82f)
+                jellyShadow.color = Color.argb(46, 0, 0, 0)
+                canvas.drawRoundRect(k.rect.left + 1.5f * dp, k.rect.top + d + 2f * dp, k.rect.right - 1.5f * dp, k.rect.bottom + 2f * dp, rr, rr, jellyShadow)
+                keyPaint.color = base
+                canvas.drawRoundRect(k.rect.left, k.rect.top + d, k.rect.right, k.rect.bottom, rr, rr, keyPaint)
+                if (isDown) top += d * 0.75f
+                faceBottom = top + fh
+                val hi = blend(face, Color.WHITE, if (isDown) 0.15f else 0.5f)
+                jellyFace.shader = android.graphics.RadialGradient(k.rect.left + k.w * 0.4f, top + fh * 0.35f, maxOf(k.w, fh) * 0.6f, hi, face, android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, rr, rr, jellyFace)
+                jellyRing.color = darken(face, 0.88f); jellyRing.alpha = 150; jellyRing.strokeWidth = 1f * dp
+                val ins = 2.5f * dp
+                canvas.drawRoundRect(k.rect.left + ins, top + ins, k.rect.right - ins, faceBottom - ins, rr - ins, rr - ins, jellyRing)
+            } else if (t.jelly && t.cap == "clear") {
+                // 투명 젤리: 속이 비치는 반투명 윗면 + 흰 테두리 + 물방울 반사광
+                val d = 3f * dp
+                val jr = maxOf(r, 12f * dp)
+                keyPaint.color = face; keyPaint.alpha = 90
+                canvas.drawRoundRect(k.rect.left, k.rect.top + d, k.rect.right, k.rect.bottom, jr, jr, keyPaint)
+                keyPaint.alpha = 255
+                if (isDown) top += d * 0.8f
+                faceBottom = top + k.h - d
+                val hi = blend(face, Color.WHITE, 0.55f)
+                jellyFace.shader = android.graphics.LinearGradient(0f, top, 0f, faceBottom,
+                    Color.argb(if (isDown) 220 else 190, Color.red(hi), Color.green(hi), Color.blue(hi)),
+                    Color.argb(if (isDown) 190 else 140, Color.red(face), Color.green(face), Color.blue(face)),
+                    android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, jellyFace)
+                jellyRing.color = Color.argb(215, 255, 255, 255); jellyRing.strokeWidth = 1.3f * dp
+                canvas.drawRoundRect(k.rect.left + 0.8f * dp, top + 0.8f * dp, k.rect.right - 0.8f * dp, faceBottom - 0.8f * dp, jr, jr, jellyRing)
+                if (!isDown) {
+                    val gh = faceBottom - top
+                    jellyGloss.shader = null; jellyGloss.color = Color.argb(190, 255, 255, 255)
+                    val ow = minOf(k.w * 0.28f, 14f * dp); val oh = gh * 0.13f
+                    canvas.drawOval(k.rect.left + k.w * 0.22f - ow / 2, top + gh * 0.2f - oh / 2, k.rect.left + k.w * 0.22f + ow / 2, top + gh * 0.2f + oh / 2, jellyGloss)
+                }
+            } else if (t.jelly && t.cap == "clay") {
+                // 클레이: 반짝임 없는 무광 점토. 바닥에 퍼진 그림자, 누르면 그림자가 줄어듦 (키는 제자리)
+                val jr = maxOf(r, 12f * dp)
+                val off = if (isDown) 1f * dp else 3.5f * dp
+                val sc = darken(face, 0.55f)
+                jellyShadow.color = Color.argb(if (isDown) 40 else 34, Color.red(sc), Color.green(sc), Color.blue(sc))
+                canvas.drawRoundRect(k.rect.left - 1f * dp, k.rect.top + off + 1f * dp, k.rect.right + 1f * dp, k.rect.bottom + off, jr, jr, jellyShadow)
+                canvas.drawRoundRect(k.rect.left + 1f * dp, k.rect.top + off, k.rect.right - 1f * dp, k.rect.bottom + off * 0.6f, jr, jr, jellyShadow)
+                faceBottom = k.rect.bottom
+                jellyFace.shader = android.graphics.LinearGradient(0f, top, 0f, faceBottom,
+                    blend(face, Color.WHITE, if (isDown) 0.05f else 0.28f), darken(face, 0.95f), android.graphics.Shader.TileMode.CLAMP)
+                canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, jr, jr, jellyFace)
+                jellyRing.color = Color.argb(if (isDown) 40 else 110, 255, 255, 255); jellyRing.strokeWidth = 1.5f * dp
+                canvas.drawRoundRect(k.rect.left + 1f * dp, top + 1f * dp, k.rect.right - 1f * dp, faceBottom - 1f * dp, jr - dp, jr - dp, jellyRing)
+            } else if (t.jelly) {
                 // 3D 젤리 키캡: 바닥 그림자 → 아랫단(두께) → 윗면(위가 밝은 그라데이션) → 반짝임
                 // 그리는 모양만 입체, 누르는 판정 영역(k.rect)은 그대로
                 val d = JELLY_DEPTH * dp

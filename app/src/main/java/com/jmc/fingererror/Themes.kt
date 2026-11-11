@@ -28,7 +28,8 @@ data class Theme(
     val short: String? = null,  // 테마 메뉴에 보일 짧은 이름
     val spaceRes: Int = 0,      // 스페이스바 팻핑이 (밤 모자 등)
     val sprinkle: String? = null, // 키 모서리 곳곳의 작은 잎 (그림 이름 앞부분)
-    val jelly: Boolean = true    // 3D 젤리 키캡 (위가 밝은 윗면 + 두께 + 반짝임)
+    val jelly: Boolean = true,   // 3D 키캡 (아래 cap 모양으로 그림)
+    val cap: String = "jelly"    // 키캡 모양: jelly 젤리 · round 동글 타자기 · clear 투명 젤리 · clay 클레이
 ) {
     val menuName get() = short ?: name
 }
@@ -66,19 +67,17 @@ object Themes {
         ),
         Theme(
             "mint", "민트 소다",
-            bg = c(150, 226, 212), key = c(238, 252, 248), special = c(96, 206, 186),
-            pressKey = c(214, 242, 236), pressSpecial = c(80, 190, 170),
-            text = c(30, 96, 86), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            side = c(150, 208, 196), sideSpecial = c(46, 150, 132), accent = c(40, 168, 148),
-            radiusDp = 10f
+            bg = c(132, 222, 206), key = c(236, 252, 248), special = c(90, 200, 186),
+            pressKey = c(212, 240, 234), pressSpecial = c(74, 184, 170),
+            text = c(30, 96, 92), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(44, 170, 190), radiusDp = 10f, cap = "round", short = "동글 민트"
         ),
         Theme(
-            "peach", "피치 코랄",
-            bg = c(255, 214, 200), key = c(255, 245, 239), special = c(255, 150, 128),
-            pressKey = c(252, 226, 216), pressSpecial = c(240, 130, 110),
-            text = c(186, 80, 64), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            side = c(236, 182, 166), sideSpecial = c(214, 96, 80), accent = c(246, 104, 84),
-            radiusDp = 10f
+            "peach", "투명 피치 젤리",
+            bg = c(255, 214, 204), key = c(255, 176, 160), special = c(255, 140, 130),
+            pressKey = c(250, 150, 134), pressSpecial = c(236, 116, 106),
+            text = c(150, 50, 46), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(255, 110, 110), radiusDp = 12f, cap = "clear", short = "투명 피치"
         ),
         Theme(
             "lime", "라임 젤리",
@@ -89,12 +88,11 @@ object Themes {
             radiusDp = 10f
         ),
         Theme(
-            "lavender", "라벤더 젤리",
-            bg = c(222, 212, 246), key = c(252, 248, 255), special = c(184, 160, 240),
-            pressKey = c(238, 230, 252), pressSpecial = c(168, 142, 228),
-            text = c(96, 72, 156), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            side = c(204, 190, 236), sideSpecial = c(128, 100, 204), accent = c(150, 112, 232),
-            radiusDp = 10f
+            "lavender", "라벤더 클레이",
+            bg = c(232, 224, 248), key = c(242, 235, 253), special = c(198, 180, 240),
+            pressKey = c(226, 216, 246), pressSpecial = c(180, 160, 230),
+            text = c(100, 80, 150), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+            accent = c(160, 130, 232), radiusDp = 12f, cap = "clay", short = "라벤더 클레이"
         ),
         Theme(
             "coral", "가을 코랄",
