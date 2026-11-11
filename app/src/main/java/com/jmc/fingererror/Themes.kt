@@ -269,10 +269,12 @@ object Themes {
     fun pageOf(id: String) = maxOf(0, pages.indexOfFirst { p -> p.any { it.id == id } })
 
     /** 컬러 테마의 키캡 모양 (드롭다운) */
-    val CAPS = listOf("jelly" to "젤리", "round" to "동글 타자기", "clear" to "투명 젤리", "clay" to "클레이", "sa" to "레트로 기계식")
+    val CAPS = listOf("jelly" to "젤리", "round" to "동글 타자기", "clay" to "클레이", "sa" to "레트로 기계식")
     fun capName(id: String) = CAPS.firstOrNull { it.first == id }?.second ?: "젤리"
-    fun capId(ctx: Context): String =
-        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString("cap", "jelly") ?: "jelly"
+    fun capId(ctx: Context): String {
+        val v = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString("cap", "jelly") ?: "jelly"
+        return if (CAPS.any { it.first == v }) v else "jelly"   // 없어진 모양(투명 젤리)은 젤리로
+    }
     fun setCap(ctx: Context, id: String) {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString("cap", id).apply()
     }

@@ -493,7 +493,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 canvas.drawRoundRect(k.rect.left, k.rect.top + d, k.rect.right, k.rect.bottom, rr, rr, keyPaint)
                 if (isDown) top += d * 0.75f
                 faceBottom = top + fh
-                val hi = blend(face, Color.WHITE, if (isDown) 0.15f else 0.5f)
+                val hi = blend(face, Color.WHITE, if (isDown) 0.06f else 0.2f)   // 너무 밝으면 색이 뿌옇게 보여서 은은하게
                 jellyFace.shader = android.graphics.RadialGradient(k.rect.left + k.w * 0.4f, top + fh * 0.35f, maxOf(k.w, fh) * 0.6f, hi, face, android.graphics.Shader.TileMode.CLAMP)
                 canvas.drawRoundRect(k.rect.left, top, k.rect.right, faceBottom, rr, rr, jellyFace)
                 jellyRing.color = darken(face, 0.88f); jellyRing.alpha = 150; jellyRing.strokeWidth = 1f * dp
@@ -864,7 +864,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
             return
         }
         if (id == "#cap") {
-            // 키캡 모양 돌려 고르기: 젤리 → 동글 → 투명 → 클레이
+            // 키캡 모양 돌려 고르기: 젤리 → 동글 → 클레이 → 레트로
             val caps = Themes.CAPS.map { it.first }
             val next = caps[(caps.indexOf(Themes.capId(context)) + 1) % caps.size]
             Themes.setCap(context, next)
