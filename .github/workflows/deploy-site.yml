@@ -1,0 +1,54 @@
+name: Deploy Site
+
+# APK 빌드가 끝나면 체험판·정식판 사이트(Cloudflare Pages)에 자동으로 올림
+on:
+  workflow_run:
+    workflows: ["Build APK"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID 시크릿을 먼저 넣어 주세요"; exit 1
+          fi
+
+      # 아이폰 빌드가 아직 돌고 있으면 끝날 때까지 기다림 (최대 20분)
+      - name: Wait for iOS build
+        run: |
+          for i in $(seq 1 40); do
+            st=$(gh run list --repo JMC87042/fingererror-ios -L1 --json status -q '.[0].status')
+            [ "$st" = "completed" ] && break
+            echo "iOS 빌드 기다리는 중... ($st)"; sleep 30
+          done
+
+      - name: Download latest builds
+        run: |
+          gh release download latest --repo JMC87042/fingererror-android -p FingerError-trial.apk -D site/trial --clobber
+          gh release download latest --repo JMC87042/fingererror-android -p FingerError.apk -D site/app --clobber
+          gh release download latest --repo JMC87042/fingererror-ios -p FingerError.ipa -D site/app --clobber
+          ls -la site/trial site/app
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Deploy to Cloudflare Pages
+        run: |
+          npx -y wrangler@3 pages project create fingererror-trial --production-branch main || true
+          npx -y wrangler@3 pages project create fingererror-app --production-branch main || true
+          npx -y wrangler@3 pages deploy site/trial --project-name fingererror-trial --branch main --commit-dirty=true
+          npx -y wrangler@3 pages deploy site/app --project-name fingererror-app --branch main --commit-dirty=true
+          echo "체험판: https://fingererror-trial.pages.dev"
+          echo "정식판: https://fingererror-app.pages.dev"
