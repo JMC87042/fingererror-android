@@ -138,13 +138,6 @@ object Themes {
             accent = c(44, 170, 190), radiusDp = 10f
         ),
         Theme(
-            "rt_mint", "민트 & 크림",
-            bg = c(120, 220, 200), key = c(255, 253, 242), special = c(70, 206, 184),
-            pressKey = c(239, 237, 227), pressSpecial = c(64, 189, 169),
-            text = c(40, 110, 100), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(255, 112, 90), radiusDp = 10f, short = "민트 크림"
-        ),
-        Theme(
             "holly", "홀리 그린",
             bg = c(30, 110, 70), key = c(255, 250, 240), special = c(220, 50, 56),
             pressKey = c(240, 232, 218), pressSpecial = c(196, 40, 48),
