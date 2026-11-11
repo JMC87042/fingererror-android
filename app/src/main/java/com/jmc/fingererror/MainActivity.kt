@@ -144,7 +144,7 @@ class MainActivity : Activity() {
             }
         }
         refreshCards()
-        col.addView(text("크림 테마는 폰의 다크모드를 따라가요. 고른 테마는 키보드를 다시 열면 적용돼요. 키보드를 쓰다가 스페이스바 오른쪽 팻핑이를 꾹 누르면 바로 바꿀 수도 있어요.", 13f).apply { setTextColor(Color.GRAY) })
+        col.addView(text("고른 테마는 키보드를 다시 열면 적용돼요. 키보드를 쓰다가 스페이스바 오른쪽 팻핑이를 꾹 누르면 바로 바꿀 수도 있어요.", 13f).apply { setTextColor(Color.GRAY) })
 
         col.addView(android.widget.Switch(this).apply {
             val prefs = getSharedPreferences("fingererror_theme", MODE_PRIVATE)
@@ -167,7 +167,7 @@ class MainActivity : Activity() {
         col.addView(text("여기서 연습해 보세요", 16f, true))
         col.addView(EditText(this).apply { hint = "핑거에러로 쳐보세요"; minLines = 3 })
 
-        col.addView(text("버전 2026.11.11-5" + (if (Trial.isTrial) " 무료 체험판" else "") + " (로즈 골드 · 모노 흰 엔터) · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
+        col.addView(text("버전 2026.11.11-6" + (if (Trial.isTrial) " 무료 체험판" else "") + " (블랙 퍼플 기본 테마) · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
         setContentView(ScrollView(this).apply { setBackgroundColor(Color.rgb(250, 242, 234)); addView(col) })
         window.statusBarColor = Color.rgb(250, 242, 234)
     }

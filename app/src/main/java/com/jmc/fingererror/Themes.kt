@@ -38,14 +38,13 @@ data class Theme(
 object Themes {
     private fun c(r: Int, g: Int, b: Int) = Color.rgb(r, g, b)
 
-    // 1. 크림 젤리 (기본) — 말랑한 크림색 키캡, 복숭아 포인트
+    // 1. 블랙 퍼플 (기본) — 위는 블랙, 아래로 갈수록 보라 그라데이션 + 골드 포인트
     private val defaultLight = Theme(
-        "default", "크림",
-        bg = c(246, 232, 218), key = c(255, 250, 242), special = c(255, 204, 182),
-        pressKey = c(244, 234, 220), pressSpecial = c(246, 184, 160),
-        text = c(112, 78, 60), specialText = c(156, 72, 50), shadow = Color.TRANSPARENT,
-        side = c(226, 202, 180), sideSpecial = c(228, 152, 124), accent = c(255, 138, 108),
-        radiusDp = 10f
+        "default", "블랙 퍼플",
+        bg = c(40, 30, 80), key = c(36, 32, 56), special = c(112, 82, 204),
+        pressKey = c(56, 50, 84), pressSpecial = c(96, 68, 184),
+        text = c(226, 218, 255), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
+        accent = c(214, 172, 76), radiusDp = 10f, bgRes = R.drawable.bg_kit
     )
     // 폰이 다크모드일 때의 기본 (그레이 젤리)
     private val defaultDark = Theme(
@@ -314,7 +313,7 @@ object Themes {
     /** 기본 테마는 폰의 다크모드를 따라감. 컬러 테마는 고른 키캡 모양으로 */
     fun current(ctx: Context, night: Boolean): Theme {
         val id = currentId(ctx)
-        val t = if (id == "default") (if (night) defaultDark else defaultLight) else (all.firstOrNull { it.id == id } ?: defaultLight)
+        val t = if (id == "default") defaultLight else (all.firstOrNull { it.id == id } ?: defaultLight)
         return if (capped(t)) t.copy(cap = capId(ctx)) else t
     }
 }
