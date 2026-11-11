@@ -211,11 +211,11 @@ object Themes {
             accent = c(150, 34, 56), radiusDp = 10f, short = "버건디 키", group = "special"
         ),
         Theme(
-            "bur_silver", "버건디 실버",
+            "bur_silver", "실버 키",
             bg = c(110, 22, 40), key = c(206, 206, 210), special = c(150, 150, 156),
             pressKey = c(185, 185, 189), pressSpecial = c(132, 132, 137),
             text = c(110, 22, 40), specialText = Color.WHITE, shadow = Color.TRANSPARENT,
-            accent = c(70, 70, 76), radiusDp = 10f, short = "버건디 실버", group = "special"
+            accent = c(70, 70, 76), radiusDp = 10f, short = "실버 키", group = "special"
         ),
         Theme(
             "bur_charcoal", "버건디 차콜",
@@ -225,11 +225,11 @@ object Themes {
             accent = c(150, 150, 158), radiusDp = 10f, short = "버건디 차콜", group = "special"
         ),
         Theme(
-            "bur_gold", "버건디 골드",
+            "bur_gold", "버건디 실버",
             bg = c(70, 12, 26), key = c(128, 24, 46), special = c(92, 16, 32),
             pressKey = c(115, 21, 41), pressSpecial = c(80, 14, 28),
-            text = c(232, 192, 118), specialText = c(232, 192, 118), shadow = Color.TRANSPARENT,
-            accent = c(214, 170, 86), radiusDp = 10f, short = "버건디 골드", group = "special"
+            text = c(232, 234, 240), specialText = c(214, 216, 224), shadow = Color.TRANSPARENT,
+            accent = c(158, 162, 176), radiusDp = 10f, short = "버건디 실버", group = "special"
         ),
     )
 
