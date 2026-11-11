@@ -165,11 +165,11 @@ object Themes {
             accent = c(255, 196, 90), radiusDp = 10f, group = "retro", short = "체리"
         ),
         Theme(
-            "rt_mono", "모노",
-            bg = c(44, 44, 48), key = c(78, 78, 86), special = c(240, 240, 236),
-            pressKey = c(73, 73, 80), pressSpecial = c(220, 220, 217),
-            text = c(246, 246, 242), specialText = c(40, 40, 44), shadow = Color.TRANSPARENT,
-            radiusDp = 10f, group = "retro", short = "모노"
+            "rt_mono", "블랙",
+            bg = c(30, 30, 34), key = c(70, 70, 76), special = c(50, 50, 55),
+            pressKey = c(92, 92, 98), pressSpecial = c(70, 70, 76),
+            text = c(246, 246, 242), specialText = c(246, 246, 242), shadow = Color.TRANSPARENT,
+            radiusDp = 10f, group = "retro", short = "블랙"
         ),
         Theme(
             "rt_milk", "딸기 우유",
