@@ -69,6 +69,10 @@ class KeyboardView(ctx: Context) : View(ctx) {
 
     private val night = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
     private var theme: Theme = Themes.current(ctx, night)
+        set(v) { field = v; onThemeChanged?.invoke(v) }
+    /** 테마가 바뀌면 (예측 단어 줄도 같은 색으로) */
+    var onThemeChanged: ((Theme) -> Unit)? = null
+    fun currentTheme(): Theme = theme
 
     /** 앱에서 고른 테마를 다시 읽음 (키보드가 열릴 때마다) */
     fun reloadTheme() {

@@ -72,6 +72,64 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
     override fun onCreate() {
         super.onCreate()
         lr = Learner(this)
+        predictor = Predictor(this)
+    }
+
+    // ---------------- 예측 단어 (키보드 위 후보 3칸) ----------------
+    private lateinit var predictor: Predictor
+    private var bar: SuggestBar? = null
+    private var noPredict = false      // 비밀번호 칸 등에선 끔
+    private val suggestRun = Runnable { updateSuggestions() }
+    private fun suggestSoon() { handler.removeCallbacks(suggestRun); handler.postDelayed(suggestRun, 30) }
+
+    private fun isWordCh(c: Char) = c.isLetterOrDigit() || c in 0x3131.toChar()..0x318E.toChar()
+
+    /** 커서 앞 글자에서 (앞 단어, 쓰는 중인 단어) */
+    private fun wordsBefore(): Pair<String?, String> =
+        splitWords(currentInputConnection?.getTextBeforeCursor(60, 0)?.toString() ?: return null to "")
+
+    private fun splitWords(t: String): Pair<String?, String> {
+        var i = t.length
+        while (i > 0 && isWordCh(t[i - 1])) i--
+        val cur = t.substring(i)
+        var j = i
+        while (j > 0 && t[j - 1] == ' ') j--
+        if (j > 0 && !isWordCh(t[j - 1])) return null to cur   // 문장 끝(. , 줄바꿈) 뒤면 앞 단어 없음
+        var k = j
+        while (k > 0 && isWordCh(t[k - 1])) k--
+        val prev = t.substring(k, j)
+        return (if (prev.isEmpty() || j == i) null else prev) to cur
+    }
+
+    private fun updateSuggestions() {
+        val b = bar ?: return
+        if (noPredict) { b.setWords(emptyList()); return }
+        val (prev, cur) = wordsBefore()
+        b.setWords(predictor.suggest(prev, cur))
+    }
+
+    /** 스페이스·엔터·마침표로 단어를 끝낼 때 배우기 */
+    private fun learnWordBeforeCursor() {
+        if (noPredict) return
+        // 방금 친 띄어쓰기·문장부호 하나를 떼고 그 앞 단어 (자동 교정된 뒤의 단어를 배움)
+        val t = currentInputConnection?.getTextBeforeCursor(61, 0)?.toString() ?: return
+        if (t.isEmpty() || isWordCh(t.last())) return
+        val (prev, cur) = splitWords(t.dropLast(1))
+        if (cur.isNotEmpty() && cur.any { it in '\uAC00'..'\uD7A3' || it.isLetter() }) predictor.learn(prev, cur)
+    }
+
+    private fun pickSuggestion(word: String) {
+        val ic = currentInputConnection ?: return
+        commitAll()
+        val (prev, cur) = wordsBefore()
+        ic.beginBatchEdit()
+        if (cur.isNotEmpty()) ic.deleteSurroundingText(cur.length, 0)
+        ic.commitText("$word ", 1)
+        ic.endBatchEdit()
+        lastEditAt = SystemClock.uptimeMillis()
+        resetWord(); history.clear(); clearDel(); lastPunct = null
+        predictor.learn(prev, word)
+        suggestSoon()
     }
 
     private var root: android.widget.FrameLayout? = null
@@ -84,7 +142,17 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         reportPanel = null
         // 키보드 + (팻핑이 메뉴 📊를 누르면) 그 위를 덮는 리포트
         val f = android.widget.FrameLayout(this)
-        f.addView(v)
+        // 맨 위 예측 단어 줄 (키 크기·위치는 그대로, 줄만 위에 하나 더)
+        val b = SuggestBar(this)
+        b.setTheme(v.currentTheme())
+        b.onPick = { w -> pickSuggestion(w) }
+        b.onForget = { w -> predictor.forget(w); kv?.showToast("‘$w’ 지웠어요", "이 단어는 다시 추천 안 할게요"); suggestSoon() }
+        v.onThemeChanged = { t -> bar?.setTheme(t) }
+        bar = b
+        val col = android.widget.LinearLayout(this).apply { orientation = android.widget.LinearLayout.VERTICAL }
+        col.addView(b, android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT))
+        col.addView(v, android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT))
+        f.addView(col)
         root = f
         return f
     }
@@ -102,7 +170,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
             onClose = { closeReport() },
             onReset = { resetFromKeyboard() })
         p.render()
-        val h = (kv?.height ?: (294 * resources.displayMetrics.density).toInt()) + (90 * resources.displayMetrics.density).toInt()
+        val h = (kv?.height ?: (294 * resources.displayMetrics.density).toInt()) + (bar?.height ?: 0) + (90 * resources.displayMetrics.density).toInt()
         f.addView(p.view, android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT, h))
         reportPanel = p
     }
@@ -116,6 +184,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
 
     private fun resetFromKeyboard() {
         lr.reset()
+        predictor.clear()
         lr.requestReset()
         // 방금 여기서 지웠으니 다음에 키보드를 열 때 또 지우지 않게
         getSharedPreferences("fingererror", MODE_PRIVATE).let { sp -> sp.edit().putLong("resetDone", sp.getLong("resetAt", 0)).apply() }
@@ -126,6 +195,16 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
         kv?.reloadTheme()
+        kv?.let { bar?.setTheme(it.currentTheme()) }
+        // 비밀번호·숫자 칸에선 예측 단어를 쓰지도 배우지도 않음
+        val it0 = info?.inputType ?: 0
+        val cls = it0 and android.text.InputType.TYPE_MASK_CLASS
+        val vari = it0 and android.text.InputType.TYPE_MASK_VARIATION
+        noPredict = cls != android.text.InputType.TYPE_CLASS_TEXT ||
+            vari == android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD || vari == android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ||
+            vari == android.text.InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || vari == android.text.InputType.TYPE_TEXT_VARIATION_URI ||
+            vari == android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        bar?.visibility = if (cls == android.text.InputType.TYPE_CLASS_TEXT && !noPredict) View.VISIBLE else View.GONE
         kv?.let { v ->
             v.hand = lr.mode.removePrefix("W")
             lr.switchMode(v.profileKey())
@@ -137,6 +216,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         Trial.noticeToday(this)?.let { t -> handler.postDelayed({ kv?.showToast(t.first, t.second) }, 900) }
         // 앱에서 '데이터 초기화'를 눌렀으면 여기서 엄지 기록을 처음부터
         if (lr.applyResetIfAsked()) {
+            predictor.clear()
             handler.postDelayed({ kv?.showToast("기록을 비웠어요", "팻핑이가 처음부터 다시 배울게요") }, 600)
         }
         // 예전부터 쌓인 기록이 이미 100개를 넘었으면 키보드를 열 때 바로 리포트를 올림
@@ -166,6 +246,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         currentInputConnection?.finishComposingText()
         tokens.clear(); wordDone = ""
         lr.save()
+        predictor.save()
         super.onFinishInputView(finishingInput)
     }
 
@@ -174,6 +255,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         candidatesStart: Int, candidatesEnd: Int
     ) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
+        suggestSoon()
         // 사용자가 커서를 옮기면 조합 중이던 글자를 확정
         if (tokens.isEmpty()) return
         val recent = SystemClock.uptimeMillis() - lastEditAt < 300
@@ -308,6 +390,8 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         val p = pending.remove(pointerId) ?: return
         val v = kv ?: return
         val k = v.keys.getOrNull(p.idx) ?: return
+        if (p.id == "SPACE" || p.id == "ENTER" || p.id == "." || p.id == "," || p.id == "?" || p.id == "!") handler.post { learnWordBeforeCursor() }
+        suggestSoon()
         when {
             p.id == "LANG" -> { commitAll(); v.toggleLang(); autoCap() }
             k.letter && v.page == KeyboardView.Page.ENGLISH -> typeEnglish(p.id, p.fx, p.fy, p.raw)
