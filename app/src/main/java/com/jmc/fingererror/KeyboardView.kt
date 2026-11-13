@@ -29,6 +29,10 @@ class KeyboardView(ctx: Context) : View(ctx) {
         fun onWideChange()
         /** 스페이스바를 꾹 누르거나 밀어서 커서 이동 (음수 = 왼쪽) */
         fun onCursor(by: Int)
+        /** 트랙패드 모드에서 위아래 줄 이동 (음수 = 위) */
+        fun onCursorLine(by: Int)
+        /** 트랙패드 모드에서 두 번째 손가락 톡 → 글자 선택 시작/끝 */
+        fun onSelectMode(on: Boolean)
         /** 팻핑이 메뉴의 📊 → 키보드 안에서 리포트 보기 */
         fun onReport()
     }
@@ -619,6 +623,8 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 }
             } }
 
+            // 트랙패드 모드(스페이스 꾹): 아이폰처럼 글자를 지워 빈 판으로
+            if (cursorOn) continue
             val cy = (top + faceBottom) / 2
             val logo = bmp(resId("pat_" + t.id)) ?: spaceLogo
             if (k.id == "SPACE" && i != keys.indexOfFirst { it.id == "SPACE" }) continue   // 나뉜 자판의 두 번째 스페이스는 빈 키
@@ -758,6 +764,9 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private var cursorDir = 0       // 마지막으로 움직인 방향
     private var cursorT = 0L        // 빠르게 밀면 더 많이 (가속)
     private var cursorPX = 0f
+    private var cursorLastY = 0f    // 위아래 줄 이동 (트랙패드)
+    private var cursorFY = 0f
+    private var selecting = false   // 두 번째 손가락으로 선택 중
     private val cursorArm = Runnable { armCursor() }
 
     /** 커서 모드 시작: 이 스페이스는 띄어쓰기로 넣지 않음 */
@@ -768,17 +777,30 @@ class KeyboardView(ctx: Context) : View(ctx) {
         cancelHold()
         listener?.onCancel(pid)
         down.remove(pid)
+        cursorLastY = cursorFY
         performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
         invalidate()
     }
 
-    private fun cursorMoved(x: Float) {
+    private fun cursorMoved(x: Float, y: Float) {
+        if (cursorOn) {
+            // 위아래: 손가락을 한 줄 높이쯤 올리고 내리면 윗줄·아랫줄로 (아이폰 트랙패드처럼)
+            cursorFY = cursorFY * 0.3f + y * 0.7f
+            val lineStep = 26 * dp
+            val ln = ((cursorFY - cursorLastY) / lineStep).toInt()
+            if (ln != 0) {
+                cursorLastY += ln * lineStep
+                listener?.onCursorLine(ln)
+                performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK)
+            }
+        }
         if (!cursorOn) {
             // 글자 치다가 스페이스를 살짝 스친 건 커서 이동이 아님 (확실히 옆으로 밀어야 시작)
             if (Math.abs(x - cursorLastX) < 28 * dp) return
             armCursor()
             if (!cursorOn) return
             cursorLastX = x; cursorFX = x; cursorPX = x
+            cursorLastY = y; cursorFY = y
             cursorT = android.os.SystemClock.uptimeMillis()
             return
         }
@@ -805,8 +827,11 @@ class KeyboardView(ctx: Context) : View(ctx) {
 
     private fun endCursor() {
         removeCallbacks(cursorArm)
+        val wasOn = cursorOn
         cursorPid = -1
         cursorOn = false
+        if (selecting) { selecting = false; listener?.onSelectMode(false) }
+        if (wasOn) invalidate()
     }
 
     private fun openMenuFromHold() {
@@ -1026,6 +1051,13 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 val i = e.actionIndex
                 val pid = e.getPointerId(i)
                 val x = e.getX(i); val y = e.getY(i)
+                if (cursorOn && pid != cursorPid) {
+                    // 트랙패드 중 다른 손가락으로 톡 = 글자 선택 시작/끝 (아이폰처럼), 글자는 안 들어감
+                    selecting = !selecting
+                    listener?.onSelectMode(selecting)
+                    performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
+                    return true
+                }
                 if (menuOpen) {
                     // 메뉴가 떠 있는 동안의 터치는 글자 입력·학습과 무관
                     if (panel.contains(x, y)) { menuPid = pid; hot = itemAt(x, y) } else closeMenu()
@@ -1056,6 +1088,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
                         // 팻핑이 그림을 꾹 = 메뉴, 그 밖을 꾹 = 커서 이동 (어디서든 좌우로 밀면 커서 이동)
                         cancelHold(); endCursor()
                         cursorPid = pid; cursorLastX = x; cursorFX = x; cursorDir = 0; cursorPX = x; cursorT = android.os.SystemClock.uptimeMillis()
+                        cursorLastY = y; cursorFY = y
                         val ps = sk.h * 0.84f
                         val pcx = sk.rect.right - PAT_PAD * dp - ps / 2
                         if (Math.abs(x - pcx) <= ps / 2 + 8 * dp) {
@@ -1076,7 +1109,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
                     } else if (pid == cursorPid) {
                         // 팻핑이에서 밀면 메뉴 대신 커서
                         if (pid == holdPid && Math.hypot((x - holdX).toDouble(), (y - holdY).toDouble()) > 12 * dp) cancelHold()
-                        if (holdPid != pid) cursorMoved(x)
+                        if (holdPid != pid) cursorMoved(x, y)
                     }
                 }
             }

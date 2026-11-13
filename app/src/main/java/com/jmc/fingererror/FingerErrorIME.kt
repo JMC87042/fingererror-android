@@ -329,11 +329,36 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
     }
 
     /** 스페이스바로 커서 이동 (쓰던 글자는 먼저 확정) */
+    /** 트랙패드에서 두 번째 손가락으로 선택 중이면 Shift를 누른 채 움직여 글자를 선택 */
+    private var selectMode = false
+
+    private fun sendArrow(code: Int, times: Int) {
+        val ic = currentInputConnection ?: return
+        repeat(times) {
+            if (selectMode) {
+                val meta = KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON
+                val now = SystemClock.uptimeMillis()
+                ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, code, 0, meta))
+                ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, code, 0, meta))
+            } else sendDownUpKeyEvents(code)
+        }
+    }
+
     override fun onCursor(by: Int) {
         commitAll()
         history.clear(); clearDel()
-        val code = if (by < 0) KeyEvent.KEYCODE_DPAD_LEFT else KeyEvent.KEYCODE_DPAD_RIGHT
-        repeat(Math.abs(by)) { sendDownUpKeyEvents(code) }
+        sendArrow(if (by < 0) KeyEvent.KEYCODE_DPAD_LEFT else KeyEvent.KEYCODE_DPAD_RIGHT, Math.abs(by))
+    }
+
+    override fun onCursorLine(by: Int) {
+        commitAll()
+        history.clear(); clearDel()
+        sendArrow(if (by < 0) KeyEvent.KEYCODE_DPAD_UP else KeyEvent.KEYCODE_DPAD_DOWN, Math.abs(by))
+    }
+
+    override fun onSelectMode(on: Boolean) {
+        commitAll()
+        selectMode = on
     }
 
     override fun onWideChange() {
