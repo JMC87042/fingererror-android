@@ -154,6 +154,14 @@ class MainActivity : Activity() {
             setOnCheckedChangeListener { _, on -> prefs.edit().putBoolean("numRow", on).apply() }
             setPadding(0, (12 * dp).toInt(), 0, (12 * dp).toInt())
         })
+        col.addView(android.widget.Switch(this).apply {
+            val prefs = getSharedPreferences("fingererror_theme", MODE_PRIVATE)
+            text = "예측 단어 (키보드 위 후보 3칸)\n켜면 쓰는 중인 단어·다음 말을 추천해요. 후보를 꾹 누르면 지워져요."
+            textSize = 15f
+            isChecked = prefs.getBoolean("predict", false)
+            setOnCheckedChangeListener { _, on -> prefs.edit().putBoolean("predict", on).apply() }
+            setPadding(0, (12 * dp).toInt(), 0, (12 * dp).toInt())
+        })
         for ((key, label) in listOf("haptic" to "키 누를 때 진동", "sound" to "키 누를 때 소리 (무음 모드에선 안 나요)")) {
             col.addView(android.widget.Switch(this).apply {
                 val prefs = getSharedPreferences("fingererror_theme", MODE_PRIVATE)
@@ -167,7 +175,7 @@ class MainActivity : Activity() {
         col.addView(text("여기서 연습해 보세요", 16f, true))
         col.addView(EditText(this).apply { hint = "핑거에러로 쳐보세요"; minLines = 3 })
 
-        col.addView(text("버전 2026.11.13" + (if (Trial.isTrial) " 무료 체험판" else "") + " (예측 단어) · 트랙패드 커서 · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
+        col.addView(text("버전 2026.11.13" + (if (Trial.isTrial) " 무료 체험판" else "") + " (예측 단어 켜고 끄기) · 트랙패드 커서 · 새 리포트 화면 · 100개마다 리포트 · 한/A 영어 · 숫자 줄 · 한손 모드 · 폴드8", 12f).apply { setTextColor(Color.GRAY) })
         setContentView(ScrollView(this).apply { setBackgroundColor(Color.rgb(250, 242, 234)); addView(col) })
         window.statusBarColor = Color.rgb(250, 242, 234)
     }

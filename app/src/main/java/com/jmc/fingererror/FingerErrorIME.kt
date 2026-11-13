@@ -200,7 +200,8 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
         val it0 = info?.inputType ?: 0
         val cls = it0 and android.text.InputType.TYPE_MASK_CLASS
         val vari = it0 and android.text.InputType.TYPE_MASK_VARIATION
-        noPredict = cls != android.text.InputType.TYPE_CLASS_TEXT ||
+        val predictOn = getSharedPreferences("fingererror_theme", MODE_PRIVATE).getBoolean("predict", false)
+        noPredict = !predictOn || cls != android.text.InputType.TYPE_CLASS_TEXT ||
             vari == android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD || vari == android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ||
             vari == android.text.InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || vari == android.text.InputType.TYPE_TEXT_VARIATION_URI ||
             vari == android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
