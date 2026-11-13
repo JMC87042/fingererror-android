@@ -86,7 +86,7 @@ class FingerErrorIME : InputMethodService(), KeyboardView.Listener {
 
     /** 커서 앞 글자에서 (앞 단어, 쓰는 중인 단어) */
     private fun wordsBefore(): Pair<String?, String> =
-        splitWords(currentInputConnection?.getTextBeforeCursor(60, 0)?.toString() ?: return null to "")
+        splitWords(currentInputConnection?.getTextBeforeCursor(60, 0)?.toString() ?: "")
 
     private fun splitWords(t: String): Pair<String?, String> {
         var i = t.length
