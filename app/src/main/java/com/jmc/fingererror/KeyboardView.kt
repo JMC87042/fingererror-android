@@ -202,7 +202,11 @@ class KeyboardView(ctx: Context) : View(ctx) {
     }
 
 
+    /** 키보드 전체 밀기로 커서 (삼성 '커서 제어'처럼, 설정에서 켬 · 처음엔 꺼짐) */
+    private var swipeAll = false
+
     private fun readNumRow() {
+        swipeAll = context.getSharedPreferences("fingererror_theme", Context.MODE_PRIVATE).getBoolean("swipeCursor", false)
         val v = context.getSharedPreferences("fingererror_theme", Context.MODE_PRIVATE).getBoolean("numRow", true)
         if (v != numRow) { numRow = v; build(); requestLayout() }
     }
@@ -771,6 +775,9 @@ class KeyboardView(ctx: Context) : View(ctx) {
     private var cursorLastY = 0f    // 위아래 줄 이동 (트랙패드)
     private var cursorFY = 0f
     private var selecting = false   // 두 번째 손가락으로 선택 중
+    private var cursorWide = false  // 스페이스가 아닌 글자 키에서 시작 (키보드 전체 밀기)
+    private var cursorSX = 0f
+    private var cursorSY = 0f
     private val cursorArm = Runnable { armCursor() }
 
     /** 커서 모드 시작: 이 스페이스는 띄어쓰기로 넣지 않음 */
@@ -798,9 +805,17 @@ class KeyboardView(ctx: Context) : View(ctx) {
                 performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK)
             }
         }
-        if (!cursorOn) {
+        if (!cursorOn && cursorWide) {
+            // 글자 키에서 시작: 엄지가 살짝 미끄러진 건 오타 학습용 그대로 두고,
+            // 키 1개 반쯤 확실히 옆으로 밀어야 커서 모드 (위아래로 움직이면 포기)
+            val dx = Math.abs(x - cursorSX); val dy = Math.abs(y - cursorSY)
+            if (dy > 22 * dp && dy > dx) { endCursor(); return }
+            if (dx < 48 * dp || dx < dy * 2) return
+        } else if (!cursorOn) {
             // 글자 치다가 스페이스를 살짝 스친 건 커서 이동이 아님 (확실히 옆으로 밀어야 시작)
             if (Math.abs(x - cursorLastX) < 28 * dp) return
+        }
+        if (!cursorOn) {
             armCursor()
             if (!cursorOn) return
             cursorLastX = x; cursorFX = x; cursorPX = x
@@ -834,6 +849,7 @@ class KeyboardView(ctx: Context) : View(ctx) {
         val wasOn = cursorOn
         cursorPid = -1
         cursorOn = false
+        cursorWide = false
         if (selecting) { selecting = false; listener?.onSelectMode(false) }
         if (wasOn) invalidate()
     }
@@ -1084,6 +1100,13 @@ class KeyboardView(ctx: Context) : View(ctx) {
                     down[pid] = idx
                     // 스페이스를 누른 채 다음 글자를 빨리 치면 커서 이동 대기 취소 (타자 중 커서 튐 방지)
                     if (keys.getOrNull(idx)?.id != "SPACE" && cursorPid >= 0 && !cursorOn) endCursor()
+                    // 키보드 전체 밀기 켰을 때: 글자 키에서 옆으로 길게 밀어도 커서 이동
+                    keys.getOrNull(idx)?.takeIf { swipeAll && !it.special && it.id != "SPACE" && cursorPid < 0 }?.let {
+                        cursorPid = pid; cursorWide = true
+                        cursorSX = x; cursorSY = y
+                        cursorLastX = x; cursorFX = x; cursorDir = 0; cursorPX = x; cursorT = android.os.SystemClock.uptimeMillis()
+                        cursorLastY = y; cursorFY = y
+                    }
                     if (keys.getOrNull(idx)?.id == "LANG") {
                         cancelLang(); langPid = pid
                         postDelayed(langHold, 500)
